@@ -51,6 +51,20 @@ const st = {
   ui: { optPart: (() => { try { return sessionStorage.getItem("optPart") || null; } catch { return null; } })(), signup: false, plan: "exam", msg: null, msgBad: false, flashI: 0, flashBack: false, delArmed: false },
 };
 let S = null; // current session (quiz / mock / screen state)
+// opened from the website's track tiles (?s=1&t=nursing): open the sign-up form and remember the track for after sign-in
+try {
+  const q = new URLSearchParams(location.search), t0 = q.get("t");
+  if (t0 && /^[a-z_]{2,20}$/.test(t0)) localStorage.setItem("wantTrack", t0 + "|" + Date.now());
+  if (q.get("s") === "1") st.ui.signup = true;
+} catch { /* ignore */ }
+function wantedTrack() {
+  try {
+    const [k, ts] = (localStorage.getItem("wantTrack") || "").split("|");
+    localStorage.removeItem("wantTrack");
+    if (!k || Date.now() - Number(ts) > 7 * 864e5) return undefined;
+    return st.tracks.some((x) => x.id === k) ? k : undefined;
+  } catch { return undefined; }
+}
 
 /* ---------------- helpers ---------------- */
 const t = (k) => T[st.lang][k];
@@ -307,7 +321,7 @@ function route() {
   if (!st.profile?.track) {
     // only one track open (e.g. launch with nursing only): pick it, no choice screen
     if (st.tracks?.length === 1) return autoTrack(st.tracks[0].id);
-    return chooseTrack();
+    return chooseTrack(wantedTrack());
   }
   // opened from a friend's challenge link (?c=CODE)
   const fcode = new URLSearchParams(location.search).get("c");
