@@ -14,106 +14,144 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#EAF1FA;--surface:#fff;--ink:#0F1E33;--muted:#566A85;--line:#D2DEEC;--accent:#1554A8;--accent-soft:#DCE8F8;--ok:#1F8A4C;--amber:#B97812;--amber-soft:#FBEBCF}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0C1626;--surface:#142238;--ink:#E5EDF8;--muted:#93A5BE;--line:#23365A;--accent:#5B9CF0;--accent-soft:#16305A;--ok:#4CC27E;--amber:#E7AE4C;--amber-soft:#3A2D16}}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:Rubik,system-ui,sans-serif;line-height:1.6}
+:root{--bg:#F3F6FB;--surface:#fff;--ink:#0B1730;--muted:#5B6B85;--faint:#B8C3D6;--line:#DDE5F0;--accent:#1554A8;--accent-2:#2F7BE8;--accent-soft:#E3EDFB;--deep:#07163A;--r:28px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#060E1F;--surface:#0E1A33;--ink:#EAF0FA;--muted:#9AABC6;--faint:#3A4D72;--line:#1B2C4D;--accent:#6AA6F5;--accent-2:#6AA6F5;--accent-soft:#12284F}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+html,body{overflow-x:clip}body{margin:0;background:var(--bg);color:var(--ink);font-family:Rubik,system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:var(--accent)}
-.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
-header.top{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+.bg-glow{position:absolute;inset:0 0 auto 0;height:760px;z-index:-1;pointer-events:none;background:radial-gradient(700px 380px at 80% -40px,rgba(47,123,232,.22),transparent 70%),radial-gradient(520px 320px at 5% 20%,rgba(47,123,232,.12),transparent 70%)}
+header.top{position:sticky;top:12px;z-index:50;margin:12px auto 0;max-width:1140px;display:flex;align-items:center;justify-content:space-between;padding:10px 14px 10px 18px;border:1px solid var(--line);border-radius:999px;background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(14px);box-shadow:0 10px 30px rgba(11,23,48,.06)}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
-.brand img{width:42px;height:42px;border-radius:12px}
-.brand b{font-size:22px}
-.top nav{display:flex;gap:16px;font-size:15px}
-.top nav a{text-decoration:none;color:var(--muted)}
-.hero{display:grid;gap:28px;align-items:center;padding:24px 0 40px}
-.hero h1{font-size:clamp(30px,5vw,48px);line-height:1.15;margin:0 0 12px}
-.hero p.lead{font-size:18px;color:var(--muted);margin:0 0 22px}
-.cta{display:flex;flex-wrap:wrap;gap:12px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 22px;border-radius:14px;font:600 17px Rubik,sans-serif;text-decoration:none}
-.btn.primary{background:var(--accent);color:#fff}
+.brand img{width:36px;height:36px;border-radius:11px}.brand b{font-size:20px}
+.top nav{display:flex;align-items:center;gap:22px;font-size:15px}
+.top nav a{text-decoration:none;color:var(--muted)}.top nav a:hover{color:var(--ink)}
+.top nav .go{background:var(--ink);color:var(--bg);padding:9px 18px;border-radius:999px;font-weight:600}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:56px;padding:0 28px;border-radius:999px;font:600 17px Rubik,sans-serif;text-decoration:none;transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary{background:linear-gradient(135deg,var(--accent-2),var(--accent));color:#fff;box-shadow:0 16px 36px rgba(21,84,168,.35)}
 .btn.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
-.btn small{font-weight:400;opacity:.8;font-size:13px}
-.note{font-size:13px;color:var(--muted);margin-top:10px}
-.phone{justify-self:center;width:min(300px,78vw);border-radius:36px;border:10px solid #0F1E33;box-shadow:0 20px 60px rgba(16,35,63,.25);overflow:hidden;background:#fff}
-.phone img{display:block;width:100%;height:auto;aspect-ratio:1206/2622;object-fit:cover}
-section{padding:40px 0}
-h2{font-size:28px;margin:0 0 20px}
-.feats{display:grid;gap:14px}
-.feat{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px}
-.feat .i{font-size:26px}
-.feat h3{margin:6px 0 4px;font-size:18px}
-.feat p{margin:0;color:var(--muted);font-size:15px}
-.shots{display:flex;gap:16px;overflow-x:auto;padding-bottom:10px;scroll-snap-type:x mandatory}
-.shots img{height:auto;aspect-ratio:1206/2622;object-fit:cover;align-self:flex-start;width:220px;flex:none;border-radius:22px;border:1px solid var(--line);scroll-snap-align:start;background:#fff}
-.steps{counter-reset:s;display:grid;gap:12px;padding:0;margin:0;list-style:none}
-.steps li{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px 14px 16px;display:flex;gap:12px;align-items:flex-start}
-.steps li::before{counter-increment:s;content:counter(s);flex:none;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700}
-.faq details{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin-bottom:10px}
-.faq summary{cursor:pointer;font-weight:600}
-.faq p{margin:8px 0 0;color:var(--muted)}
-footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--muted);font-size:14px}
-footer .links{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:8px}
-@media (min-width:860px){.hero{grid-template-columns:1.2fr .8fr}.feats{grid-template-columns:repeat(3,1fr)}.steps{grid-template-columns:repeat(3,1fr)}}
+.btn small{font-weight:400;opacity:.75;font-size:13px}
+.hero{display:grid;gap:36px;align-items:center;padding:64px 0 40px}
+.pill{display:inline-flex;gap:8px;align-items:center;font-size:14px;font-weight:500;color:var(--accent);background:var(--accent-soft);padding:6px 14px;border-radius:999px;margin-bottom:20px}
+.hero h1{font-size:clamp(40px,7vw,84px);line-height:1.02;letter-spacing:-.03em;font-weight:700;margin:0 0 22px}
+.hero h1 span{color:var(--faint);display:block}
+.hero p.lead{font-size:clamp(17px,2vw,21px);color:var(--muted);max-width:34em;margin:0 0 30px}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.note{font-size:13.5px;color:var(--muted);margin-top:16px;max-width:42em}
+.stage{position:relative;justify-self:center;width:min(340px,80vw)}
+.stage::before{content:"";position:absolute;inset:-8% -22% -4%;border-radius:50%;background:radial-gradient(closest-side,rgba(47,123,232,.35),transparent 72%);z-index:-1}
+.phone{border-radius:44px;border:11px solid #0B1730;box-shadow:0 40px 90px rgba(11,23,48,.35);overflow:hidden;background:#fff;transform:rotate(-2deg)}
+.phone img{display:block;width:100%;height:auto}
+.chip-f{position:absolute;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:10px 16px;font-size:14px;font-weight:600;box-shadow:0 18px 40px rgba(11,23,48,.14);animation:fl 6s ease-in-out infinite}
+.chip-f b{color:var(--accent);font-size:20px;display:block;line-height:1.1}
+.chip-f.a{inset-inline-start:-34%;top:16%}.chip-f.b{inset-inline-end:-30%;bottom:18%;animation-delay:-3s}
+@keyframes fl{50%{transform:translateY(-10px)}}
+.tracks{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:20px 0 8px}
+.tracks span{padding:10px 18px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-weight:500;font-size:15px}
+section{padding:72px 0}
+.eyebrow{font-size:14px;font-weight:600;color:var(--accent);letter-spacing:.04em}
+h2{font-size:clamp(30px,5vw,56px);line-height:1.08;letter-spacing:-.025em;margin:8px 0 14px}
+h2 span{color:var(--faint)}
+.sub{color:var(--muted);font-size:18px;max-width:34em;margin:0 0 36px}
+.bento{display:grid;gap:18px;grid-template-columns:1fr}
+.cell{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:28px;position:relative;overflow:hidden;transition:transform .25s,box-shadow .25s}
+.cell:hover{transform:translateY(-4px);box-shadow:0 26px 56px rgba(11,23,48,.10)}
+.cell .i{width:46px;height:46px;border-radius:14px;background:var(--accent-soft);display:grid;place-items:center;font-size:23px;margin-bottom:16px}
+.cell h3{margin:0 0 8px;font-size:22px;letter-spacing:-.01em}.cell p{margin:0;color:var(--muted);font-size:16px}
+.cell.dark{color:#fff;border:0;background:radial-gradient(circle at 1px 1px,rgba(255,255,255,.09) 1px,transparent 1.5px) 0 0/24px 24px,radial-gradient(420px 260px at 90% 0%,rgba(120,170,255,.45),transparent 70%),linear-gradient(150deg,#12378a,var(--deep) 85%)}
+.cell.dark p{color:rgba(255,255,255,.78)}.cell.dark .i{background:rgba(255,255,255,.14)}
+.cell .big{font-size:clamp(56px,8vw,96px);font-weight:700;letter-spacing:-.04em;line-height:1;margin:6px 0 8px}
+.cell img.shot{display:block;width:min(230px,70%);margin:22px auto -60px;border-radius:26px 26px 0 0;border:8px solid #0B1730;border-bottom:0;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:6px}
+.stats div{background:rgba(255,255,255,.08);border-radius:20px;padding:16px 18px}
+.stats b{display:block;font-size:32px;letter-spacing:-.02em;line-height:1.1}.stats span{font-size:14px;opacity:.8}
+.rail{display:flex;gap:22px;overflow-x:auto;padding:8px 4px 24px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.rail .ph{flex:none;width:250px;scroll-snap-align:start;border-radius:34px;border:9px solid #0B1730;overflow:hidden;background:#fff;box-shadow:0 24px 60px rgba(11,23,48,.2)}
+.rail .ph img{display:block;width:100%;height:auto}
+.steps{display:grid;gap:18px;padding:0;margin:0;list-style:none;counter-reset:s}
+.steps li{counter-increment:s;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:28px;font-size:18px}
+.steps li::before{content:"0" counter(s);display:block;font-size:56px;font-weight:700;letter-spacing:-.04em;color:var(--faint);line-height:1;margin-bottom:12px}
+.faq details{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px 22px;margin-bottom:12px}
+.faq summary{cursor:pointer;font-weight:600;font-size:18px}.faq p{margin:10px 0 0;color:var(--muted)}
+.final{margin:20px 0 0;border-radius:40px;padding:72px 28px;text-align:center;color:#fff;background:radial-gradient(circle at 1px 1px,rgba(255,255,255,.09) 1px,transparent 1.5px) 0 0/24px 24px,radial-gradient(520px 300px at 50% 0%,rgba(120,170,255,.5),transparent 70%),linear-gradient(150deg,#12378a,var(--deep) 85%)}
+.final h2{color:#fff;margin:0 0 12px}.final h2 span{color:rgba(255,255,255,.5)}.final p{color:rgba(255,255,255,.8);margin:0 auto 28px;max-width:30em;font-size:18px}
+.final .cta{justify-content:center}.final .btn.ghost{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.25)}.final .btn.primary{background:#fff;color:var(--deep);box-shadow:none}
+footer{padding:40px 0 48px;color:var(--muted);font-size:14px}footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:10px}
+.rv{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.chip-f{animation:none}html{scroll-behavior:auto}}
+@media (max-width:640px){.stage::before{inset:-4% -6% 0}.rail{scroll-padding-inline:20px;padding-inline:20px}.top nav a:not(.go){display:none}.chip-f{display:none}.hero{padding-top:36px}}
+@media (min-width:860px){
+ .hero{grid-template-columns:1.25fr .75fr;padding:88px 0 56px}
+ .bento{grid-template-columns:repeat(6,1fr)}
+ .c-a{grid-column:span 3;grid-row:span 2;min-height:520px}.c-b,.c-c{grid-column:span 3}.c-d,.c-e,.c-f{grid-column:span 2}.c-g{grid-column:span 3}.c-h{grid-column:span 3}
+ .steps{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
 <body>
+<div class="bg-glow"></div>
+<header class="top">
+  <a class="brand" href="./"><img src="app/icon.png" alt=""><b>מוסמך</b></a>
+  <nav><a href="#features">מה יש באפליקציה</a><a href="#faq">שאלות</a><a href="app/" class="go">כניסה</a></nav>
+</header>
 <div class="wrap">
-  <header class="top">
-    <a class="brand" href="./"><img src="app/icon.png" alt=""><b>מוסמך</b></a>
-    <nav><a href="#features">מה יש באפליקציה</a><a href="#faq">שאלות</a><a href="mailto:mhmed6214@gmail.com">צור קשר</a></nav>
-  </header>
-
   <div class="hero">
-    <div>
-      <h1>מתכוננים לבחינות הרישוי במקצועות הבריאות, עם הסבר לכל תשובה</h1>
+    <div class="rv">
+      <div class="pill">✦ תרגול לבחינות הרישוי במקצועות הבריאות</div>
+      <h1>להתכונן לרישוי. <span>עם הסבר לכל תשובה.</span></h1>
       <p class="lead">שאלות תרגול לפי נושאים, מבחני תרגול עם זמן, משימה יומית קצרה ותוכנית לימוד אישית עד יום המבחן. בעברית ובאנגלית.</p>
       <div class="cta">
         <a class="btn primary" href="app/">להתחיל עכשיו בדפדפן</a>
         <a class="btn ghost" id="appstore" href="https://apps.apple.com/app/id6820664638">להורדה ל-iPhone <small>(App Store)</small></a>
       </div>
-      <p class="note">מסלולים: סיעוד, רפואה, פיזיותרפיה, ריפוי בעיסוק, דימות רפואי ואופטומטריה. 30 שאלות ראשונות בכל מסלול בחינם. נרשמים עם מייל, והתקדמות נשמרת גם בטלפון וגם במחשב.</p>
+      <p class="note">30 שאלות ראשונות בכל מסלול בחינם, בלי כרטיס אשראי. נרשמים עם מייל, והתקדמות נשמרת גם בטלפון וגם במחשב.</p>
     </div>
-    <div class="phone"><img src="assets/app_home_nursing.jpg" alt="המסך הראשי של מוסמך: משימת היום, ההתקדמות ומבחן חדש" width="900" height="1956"></div>
+    <div class="stage rv">
+      <div class="phone"><img src="assets/app_home_nursing.jpg" alt="המסך הראשי של מוסמך: משימת היום, ההתקדמות ומבחן חדש" width="900" height="1956"></div>
+      <div class="chip-f a"><b>10</b>שאלות ביום, רק בשבילך</div>
+      <div class="chip-f b"><b>עד 180</b>שאלות במבחן תרגול</div>
+    </div>
   </div>
+  <div class="tracks rv"><span>סיעוד</span><span>רפואה</span><span>פיזיותרפיה</span><span>ריפוי בעיסוק</span><span>דימות רפואי</span><span>אופטומטריה</span><span>רפואת שיניים</span><span>קלינאות תקשורת</span><span>רוקחות</span><span>תזונה ודיאטנות</span></div>
 </div>
 
 <section id="features"><div class="wrap">
-  <h2>מה יש באפליקציה</h2>
-  <div class="feats">
-    <div class="feat"><div class="i">✅</div><h3>הסבר לכל תשובה</h3><p>אחרי כל שאלה: מה התשובה הנכונה, למה היא נכונה ולמה שאר התשובות שגויות, עם מקור.</p></div>
-    <div class="feat"><div class="i">⏱</div><h3>מבחני תרגול</h3><p>בוחרים נושאים ומספר שאלות (עד 180), עם זמן או בלי, מודרך או כמו במבחן האמיתי. אפשר לעצור ולהמשיך.</p></div>
-    <div class="feat"><div class="i">🎯</div><h3>משימה יומית</h3><p>10 שאלות שנבחרות בשבילך כל יום: טעויות שצריך לחזור עליהן, נושאים חלשים ותרגול מגוון.</p></div>
-    <div class="feat"><div class="i">🔁</div><h3>חזרה חכמה על טעויות</h3><p>שאלה שטעית בה חוזרת אחרי יום, ואז אחרי 3, 7, 14 ו-30 יום, עד שהיא נתפסת.</p></div>
-    <div class="feat"><div class="i">🧭</div><h3>תוכנית עד המבחן</h3><p>לפי תאריך המבחן והזמן שלך: מה עושים היום, מה השבוע, ומתי מבחני תרגול.</p></div>
-    <div class="feat"><div class="i">📊</div><h3>סטטיסטיקה</h3><p>דיוק לפי נושא, הצלחה בניסיון הראשון, מבחנים קודמים וזמן לשאלה.</p></div>
-    <div class="feat"><div class="i">📋</div><h3>דף עזר וחישובים</h3><p>ערכי מעבדה, נוסחאות והמרות בתוך כל שאלה, ותרגול חישובי תרופות עם מספרים חדשים בכל פעם.</p></div>
-    <div class="feat"><div class="i">🏆</div><h3>ליגה שבועית</h3><p>תחרות בכיף עם סטודנטים אחרים ואתגר יומי. רק כינוי ונקודות מוצגים, לא שם ולא מייל.</p></div>
-    <div class="feat"><div class="i">🌐</div><h3>עברית ואנגלית</h3><p>כל שאלה בשתי השפות, עם מילון מונחים עברית–אנגלית.</p></div>
+  <div class="rv"><div class="eyebrow">מה יש באפליקציה</div>
+  <h2>כל מה שצריך. <span>במקום אחד.</span></h2>
+  <p class="sub">לא רק שאלות. כל שאלה מלמדת, ומה שטעית בו חוזר בזמן הנכון.</p></div>
+  <div class="bento">
+    <div class="cell dark c-a rv"><div class="i">✅</div><h3>הסבר לכל תשובה</h3><p>אחרי כל שאלה: מה התשובה הנכונה, למה היא נכונה ולמה שאר התשובות שגויות, עם מקור.</p><img class="shot" src="assets/iphone_3-explanation.jpg" alt="מסך הסבר לתשובה" loading="lazy"></div>
+    <div class="cell c-b rv"><div class="i">⏱</div><h3>מבחני תרגול</h3><p>בוחרים נושאים ומספר שאלות (עד 180), עם זמן או בלי, מודרך או כמו במבחן האמיתי. אפשר לעצור ולהמשיך.</p></div>
+    <div class="cell c-c rv"><div class="i">🧭</div><h3>תוכנית עד המבחן</h3><p>לפי תאריך המבחן והזמן שלך: מה עושים היום, מה השבוע, ומתי מבחני תרגול.</p></div>
+    <div class="cell c-d rv"><div class="i">🎯</div><h3>משימה יומית</h3><p>10 שאלות שנבחרות בשבילך כל יום: טעויות, נושאים חלשים ותרגול מגוון.</p></div>
+    <div class="cell c-e rv"><div class="i">🔁</div><h3>חזרה חכמה</h3><p>שאלה שטעית בה חוזרת אחרי יום, 3, 7, 14 ו-30 יום, עד שהיא נתפסת.</p></div>
+    <div class="cell c-f rv"><div class="i">📊</div><h3>סטטיסטיקה</h3><p>דיוק לפי נושא, הצלחה בניסיון הראשון וזמן לשאלה.</p></div>
+    <div class="cell dark c-g rv"><div class="eyebrow" style="color:#9CC3FF">בקצרה</div><div class="big">30</div><p>שאלות ראשונות בכל מסלול בחינם. להמשך, מנויים ללא חידוש אוטומטי, החל מ-99 ₪ לחודש.</p></div>
+    <div class="cell c-h rv"><div class="i">📋</div><h3>דף עזר, חישובים ומילון</h3><p>ערכי מעבדה, נוסחאות והמרות בתוך כל שאלה, חישובי תרופות עם מספרים חדשים בכל פעם, ומילון עברית–אנגלית. וגם ליגה שבועית בכיף, עם כינוי בלבד.</p></div>
   </div>
 </div></section>
 
 <section><div class="wrap">
-  <h2>איך זה נראה</h2>
-  <div class="shots">
-    <img src="assets/app_tracks_1.jpg" alt="בחירת מסלול: סיעוד, רפואה, פיזיותרפיה, ריפוי בעיסוק, דימות רפואי ואופטומטריה" loading="lazy" width="900" height="1733" style="aspect-ratio:auto">
-    <img src="assets/app_tracks_2.jpg" alt="עוד מסלולים: רפואת שיניים, קלינאות תקשורת, רוקחות ותזונה ודיאטנות" loading="lazy" width="900" height="1759" style="aspect-ratio:auto">
-    <img src="assets/app_home_nursing.jpg" alt="מסך ראשי במסלול סיעוד" loading="lazy" width="900" height="1956">
-    <img src="assets/app_home_medicine.jpg" alt="מסך ראשי במסלול רפואה" loading="lazy" width="900" height="1956">
+  <div class="rv"><div class="eyebrow">איך זה נראה</div><h2>פשוט. <span>ברור. בכיס.</span></h2></div>
+  <div class="rail rv">
+    <div class="ph"><img src="assets/app_tracks_1.jpg" alt="בחירת מסלול: סיעוד, רפואה, פיזיותרפיה, ריפוי בעיסוק, דימות רפואי ואופטומטריה" width="900" height="1733"></div>
+    <div class="ph"><img src="assets/app_tracks_2.jpg" alt="עוד מסלולים: רפואת שיניים, קלינאות תקשורת, רוקחות ותזונה ודיאטנות" width="900" height="1759"></div>
+    <div class="ph"><img src="assets/app_home_nursing.jpg" alt="מסך ראשי במסלול סיעוד" width="900" height="1956"></div>
+    <div class="ph"><img src="assets/app_home_medicine.jpg" alt="מסך ראשי במסלול רפואה" width="900" height="1956"></div>
   </div>
 </div></section>
 
 <section><div class="wrap">
-  <h2>מתחילים בשלוש דקות</h2>
+  <div class="rv"><div class="eyebrow">מתחילים</div><h2>שלוש דקות. <span>ואתם בפנים.</span></h2></div>
   <ol class="steps">
-    <li><span>נכנסים <a href="app/">לאפליקציה בדפדפן</a> או מורידים ל-iPhone, ונרשמים עם מייל.</span></li>
-    <li><span>בוחרים תאריך מבחן וכמה זמן ביום יש לך, ומקבלים תוכנית.</span></li>
-    <li><span>פותרים את משימת היום, ובכל טעות לומדים למה.</span></li>
+    <li class="rv">נכנסים <a href="app/">לאפליקציה בדפדפן</a> או מורידים ל-iPhone, ונרשמים עם מייל.</li>
+    <li class="rv">בוחרים תאריך מבחן וכמה זמן ביום יש לך, ומקבלים תוכנית.</li>
+    <li class="rv">פותרים את משימת היום, ובכל טעות לומדים למה.</li>
   </ol>
 </div></section>
 
 <section id="faq" class="faq"><div class="wrap">
-  <h2>שאלות נפוצות</h2>
+  <div class="rv"><div class="eyebrow">שאלות</div><h2>שאלות <span>נפוצות</span></h2></div>
   <details><summary>כמה זה עולה?</summary><p>30 השאלות הראשונות בכל מסלול בחינם, בלי כרטיס אשראי. להמשך יש מנויים ללא חידוש אוטומטי: חודש, חודשיים או שלושה חודשים, החל מ-99 ₪ לחודש.</p></details>
   <details><summary>מי כותב את השאלות?</summary><p>השאלות נכתבות ונבדקות על ידי אח מוסמך, ולכל שאלה מצוין מקור. מצאת טעות? יש כפתור „דיווח על טעות” בכל שאלה.</p></details>
   <details><summary>יש גם מסלולים חוץ מסיעוד?</summary><p>כן! בנוסף לסיעוד יש רפואה, פיזיותרפיה, ריפוי בעיסוק, דימות רפואי ואופטומטריה. מסלולים נוספים ייפתחו בקרוב.</p></details>
@@ -121,10 +159,12 @@ footer .links{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:8px}
   <details><summary>האם זה תחליף לספרי הלימוד?</summary><p>לא. מוסמך עוזר לתרגל ולחזור על החומר, ולא מבטיח ציון במבחן.</p></details>
 </div></section>
 
+<div class="wrap"><div class="final rv"><h2>מוכנים להתחיל? <span>זה בחינם.</span></h2><p>30 שאלות ראשונות בכל מסלול, בלי כרטיס אשראי.</p><div class="cta"><a class="btn primary" href="app/">להתחיל בדפדפן</a><a class="btn ghost" href="https://apps.apple.com/app/id6820664638">App Store</a></div></div></div>
 <footer><div class="wrap">
   <div class="links"><a href="legal/terms-web-he.html">תנאי שימוש</a><a href="legal/privacy-he.html">מדיניות פרטיות</a><a href="mailto:mhmed6214@gmail.com">mhmed6214@gmail.com</a><a href="legal/terms-web-en.html" lang="en">Terms (English)</a></div>
   <div>© 2026 מוחמד גרה · מוסמך</div>
 </div></footer>
+<script>(function(){var els=document.querySelectorAll('.rv');if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});return}var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}})},{threshold:.12});els.forEach(function(e){io.observe(e)})})();</script>
 <script src="assets/visit.js" defer></script>
 </body>
 </html>
