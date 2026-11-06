@@ -318,6 +318,11 @@ window.__ptrHandler = async () => {
 function route() {
   S = null;
   if (!st.user) return login();
+  if (st.profile?.track) {
+    // arrived from a track tile on the website: switch to it when this account is allowed to open it
+    const w = wantedTrack();
+    if (w && w !== st.profile.track && allowedTracks().some((x) => x.id === w)) return autoTrack(w);
+  }
   if (!st.profile?.track) {
     // only one track open (e.g. launch with nursing only): pick it, no choice screen
     if (st.tracks?.length === 1) return autoTrack(st.tracks[0].id);
