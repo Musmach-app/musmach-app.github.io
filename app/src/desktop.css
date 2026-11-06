@@ -198,6 +198,8 @@
     padding: 34px; align-items: start;
   }
   .app.protect > .card > * { grid-column: 1; }
+  .app.protect > .card > .qtop:not(.hasimg) > *, .app.protect > .card > .terms { grid-column: 1; }
+  .app.protect > .card > .qtop.hasimg { grid-column: 1; }
   .app.protect > .card > #fb { grid-column: 2; grid-row: 2 / span 6; align-self: start; }
   .app.protect #fb:empty { display: none; }
   .app.protect .ex { border-radius: 20px; padding: 22px; line-height: 1.8; font-size: 16px; }
