@@ -295,3 +295,11 @@
   .trk-card .trk-img { align-self: center; }
 }
 @media (min-width:900px){.trk-card b{text-shadow:0 2px 12px rgba(0,0,0,.35);margin-top:-30px}}
+
+/* ---------- emoji cards (optometry theory/practical chooser) ---------- */
+@media (min-width: 900px) {
+  .trk-grid:not(:has(.trk-card:nth-child(3))) { grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; max-width: 780px; margin-inline: auto; }
+  .trk-card:has(.trk-ico) { justify-content: center; align-items: center; gap: 20px; padding: 28px; min-height: 250px; }
+  .trk-card:has(.trk-ico) .trk-ico { width: 96px; height: 96px; font-size: 54px; border-radius: 28px; }
+  .trk-card:has(.trk-ico) b { margin-top: 0; padding-inline: 0; text-align: center; font-size: 25px; }
+}
