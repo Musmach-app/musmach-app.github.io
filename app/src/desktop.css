@@ -144,6 +144,8 @@
   }
   .app.wide .primary:hover { transform: translateY(-2px); filter: brightness(1.06); }
   .app.wide .primary:active { transform: translateY(0); }
+  /* buttons on the blue page-header banners stay white, like on mobile */
+  .app.wide .h-hero .primary { background: #fff; color: var(--g2, #0f3a80); box-shadow: 0 8px 22px rgba(0,0,0,.2); padding: 12px 22px; }
   .app.wide .chip.pick { transition: background .15s ease, color .15s ease; }
   .app.wide .chip.pick:hover { background: var(--accent-soft); color: var(--accent); }
 
