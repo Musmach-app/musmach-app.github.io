@@ -49,7 +49,7 @@ export const T = {
     mock: "Mock exam", mockD: "Choose how many questions, timed", mockHow: "How many questions?", mockStart: "Start exam", instant: "Show the answer and explanation right after each question", whyEach: "Why each option is right or wrong is shown under it", unfinished: "Unfinished exam", resume: "Continue", discard: "Discard", unansweredQs: "Unanswered questions", answeredOf: "answered", mockTime: "Time", mockAvail: "available", mockCustom: "Other number", mistakes: "My mistakes", bookmarks: "Saved",
     flash: "Term cards", stats: "Statistics", bytopic: "By topic", qs: "questions",
     acct: "Account", planM: "Monthly", planE: "Until exam", planC: "Access code", planNone: "No active plan",
-    until: "until", logout: "Sign out", lang: "Language", changeExam: "Change exam date", admin: "Admin",
+    until: "until", logout: "Sign out", lang: "Language", changeExam: "Change exam month", admin: "Admin",
     manage: "Manage subscription", del: "Delete account", delSure: "This permanently deletes your account and progress. Tap again to confirm.",
     support: "Support", contact: "Contact us", contactD: "Questions, problems or ideas? Write to us and we'll reply by email.", yourMsg: "Your message", send: "Send", sent: "Message sent. We'll get back to you by email.", shortMsg: "Please write a few words.", orEmail: "Or email us directly:",
     q: "Question", correct: "Correct ✓", wrong: "Incorrect ✗", source: "Source", next: "Next question", nxt: "Next", result: "See result",
@@ -93,7 +93,7 @@ export const T = {
     mock: "מבחן תרגול", mockD: "בוחרים כמה שאלות, עם זמן", mockHow: "כמה שאלות במבחן?", mockStart: "התחלת המבחן", instant: "להציג תשובה והסבר מיד אחרי כל שאלה", whyEach: "ההסבר למה כל תשובה נכונה או שגויה מופיע מתחתיה", unfinished: "מבחן שלא הסתיים", resume: "להמשיך", discard: "לבטל", unansweredQs: "שאלות שעוד לא ענית", answeredOf: "נענו", mockTime: "זמן", mockAvail: "זמינות", mockCustom: "מספר אחר", mistakes: "הטעויות שלי", bookmarks: "שמורות",
     flash: "כרטיסיות מושגים", stats: "סטטיסטיקה", bytopic: "לפי נושא", qs: "שאלות",
     acct: "חשבון", planM: "חודשי", planE: "עד הבחינה", planC: "קוד גישה", planNone: "אין מסלול פעיל",
-    until: "עד", logout: "התנתקות", lang: "שפה", changeExam: "שינוי מועד הבחינה", admin: "ניהול",
+    until: "עד", logout: "התנתקות", lang: "שפה", changeExam: "שינוי חודש הבחינה", admin: "ניהול",
     manage: "ניהול המנוי", del: "מחיקת החשבון", delSure: "פעולה זו מוחקת לצמיתות את החשבון וההתקדמות. הקש שוב לאישור.",
     support: "תמיכה", contact: "צור קשר", contactD: "שאלות, תקלות או רעיונות? כתבו לנו ונחזור אליכם במייל.", yourMsg: "ההודעה שלך", send: "שליחה", sent: "ההודעה נשלחה. נחזור אליך במייל.", shortMsg: "נא לכתוב כמה מילים.", orEmail: "או שלחו מייל ישירות:",
     q: "שאלה", correct: "נכון ✓", wrong: "לא נכון ✗", source: "מקור", next: "לשאלה הבאה", nxt: "הבא", result: "לתוצאה",
@@ -165,8 +165,8 @@ Object.assign(T.en, {
   refNote: "Ranges differ slightly between labs and textbooks. Follow your local protocol.",
   search: "Search", searchD: "Search and browse the question bank", searchPh: "A word or term, e.g. digoxin", noResults: "No questions found.",
   searchNeed: "Search needs a database update.", goal: "Daily goal", goalOf: "questions today", streak: "day streak",
-  changeGoal: "Change goal", goalDone: "Goal reached today! 🎉", examWhen: "When is your exam?",
-  examWhenD: "We'll count the days left and suggest a daily pace.", pace: "To finish every question by the exam:", perDay: "a day",
+  changeGoal: "Change goal", goalDone: "Goal reached today! 🎉", examWhen: "Which month is your exam?",
+  examWhenD: "The exact day is usually announced about two weeks before. Pick the month for now, we'll plan your pace.", pace: "To finish every question by the exam:", perDay: "a day",
   solution: "Solution", newQ: "New question", score: "Score", close: "Close",
 });
 Object.assign(T.he, {
@@ -175,8 +175,8 @@ Object.assign(T.he, {
   refNote: "הטווחים משתנים מעט בין מעבדות וספרים. פועלים לפי הנהלים במקום.",
   search: "חיפוש", searchD: "חיפוש ודפדוף בבנק השאלות", searchPh: "מילה או מושג, למשל: דיגוקסין", noResults: "לא נמצאו שאלות.",
   searchNeed: "החיפוש דורש עדכון במסד הנתונים.", goal: "יעד יומי", goalOf: "שאלות היום", streak: "ימים ברצף",
-  changeGoal: "שינוי יעד", goalDone: "עמדת ביעד היום! 🎉", examWhen: "מתי המבחן שלך?",
-  examWhenD: "נחשב כמה ימים נשארו ונציע קצב יומי.", pace: "כדי לסיים את כל השאלות עד המבחן:", perDay: "ביום",
+  changeGoal: "שינוי יעד", goalDone: "עמדת ביעד היום! 🎉", examWhen: "באיזה חודש המבחן שלך?",
+  examWhenD: "התאריך המדויק בדרך כלל מתפרסם כשבועיים לפני. מספיק לבחור חודש, ונתכנן את הקצב.", pace: "כדי לסיים את כל השאלות עד המבחן:", perDay: "ביום",
   solution: "פתרון", newQ: "שאלה חדשה", score: "ניקוד", close: "סגירה",
 });
 
@@ -206,9 +206,9 @@ Object.assign(T.he, {
 Object.assign(T.en, {
   jBuild: "Build your road to the exam", jBuildD: "A personal plan based on your exam date and your time", jTitle: "My road to the licensing exam",
   jPlanDone: "of the plan done", jSetupD: "A few quick questions and we'll build your daily and weekly plan up to the exam.",
-  jExam: "When is the exam?", jMinutes: "How many minutes a day can you study?", jDays: "How many days a week?",
+  jExam: "Which month is the exam?", jMinutes: "How many minutes a day can you study?", jDays: "How many days a week?",
   jWeak: "Which topics feel hard for you?", jWeakD: "Optional. The plan also learns from your answers.", jSave: "Save the plan", jCreate: "Build my plan",
-  jBadDate: "Choose an exam date in the future.", jEdit: "Edit", jSessions: "study days",
+  jBadDate: "Choose an upcoming exam month.", jEdit: "Edit", jSessions: "study days",
   jPhase_build: "Building the base: lots of practice in your weak topics and a mock exam once a week.",
   jPhase_review: "Review stage: more review of mistakes and two mock exams a week.",
   jPhase_final: "Final week: review and full mock exams. The day before the exam: light review and rest.",
@@ -222,9 +222,9 @@ Object.assign(T.en, {
 Object.assign(T.he, {
   jBuild: "בניית המסע שלך למבחן", jBuildD: "תוכנית אישית לפי תאריך המבחן והזמן שלך", jTitle: "המסע שלי למבחן הרישוי",
   jPlanDone: "מהתוכנית בוצע", jSetupD: "כמה שאלות קצרות, ונבנה לך תוכנית יומית ושבועית עד המבחן.",
-  jExam: "מתי המבחן?", jMinutes: "כמה דקות ביום אפשר ללמוד?", jDays: "כמה ימים בשבוע?",
+  jExam: "באיזה חודש המבחן?", jMinutes: "כמה דקות ביום אפשר ללמוד?", jDays: "כמה ימים בשבוע?",
   jWeak: "באילו נושאים קשה לך?", jWeakD: "לא חובה. התוכנית לומדת גם מהתשובות שלך.", jSave: "שמירת התוכנית", jCreate: "בניית התוכנית",
-  jBadDate: "צריך לבחור תאריך מבחן עתידי.", jEdit: "עריכה", jSessions: "ימי לימוד",
+  jBadDate: "צריך לבחור חודש מבחן עתידי.", jEdit: "עריכה", jSessions: "ימי לימוד",
   jPhase_build: "שלב בניית הבסיס: הרבה תרגול בנושאים החלשים ומבחן תרגול פעם בשבוע.",
   jPhase_review: "שלב החזרה: יותר חזרה על טעויות ושני מבחני תרגול בשבוע.",
   jPhase_final: "שבוע אחרון: חזרה ומבחנים מלאים. ביום שלפני המבחן: חזרה קלה ומנוחה.",

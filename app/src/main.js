@@ -743,6 +743,9 @@ function navHtml(on) {
 function bindNav() {
   app.querySelectorAll("[data-nav]").forEach((b) => (b.onclick = () => NAV.find((x) => x[0] === b.dataset.nav)[2]()));
 }
+// exam date = month + year only (students learn the exact day about two weeks before): stored as the 1st of the month, or the last day when that month already started
+const examFromMonth = (v) => { const first = `${v}-01`; if (first >= today()) return first; const [y, m] = v.split("-").map(Number); return `${v}-${String(new Date(y, m, 0).getDate()).padStart(2, "0")}`; };
+const fmtMonth = (d) => { const x = new Date(d + "T12:00:00"); return `${MONTHS[st.lang === "he" ? "he" : "en"][x.getMonth()]} ${x.getFullYear()}`; };
 const fmtDate = (d) => { const x = new Date(d); return `${String(x.getDate()).padStart(2, "0")}.${String(x.getMonth() + 1).padStart(2, "0")}.${x.getFullYear()}`; };
 const fmtTime = (d) => { const x = new Date(d); return `${String(x.getHours()).padStart(2, "0")}:${String(x.getMinutes()).padStart(2, "0")}`; };
 const pctOf = (a, b) => (b ? Math.round((a / b) * 100) : 0);
@@ -831,7 +834,7 @@ function home() {
     <button class="act-c c3" id="mis"><img src="${icCards}" alt=""><b>${t("mistakes")}</b><small>${tt.wrong} ${t("qs")}</small><i aria-hidden="true">${fwd()}</i></button>
     <button class="act-c c4" id="bm"><img src="${icBookmark}" alt=""><b>${t("bookmarks")}</b><small>${st.marks.size} ${t("qs")}</small><i aria-hidden="true">${fwd()}</i></button>
   </div>
-  <div id="journeyw">${!OPH && !st.profile.exam_date ? `<div class="card exq"><h3>${t("examWhen")}</h3><p class="muted">${t("examWhenD")}</p><div class="row2"><input id="exd" type="date" aria-label="${t("examWhen")}"><button class="primary slim" id="exs">${t("saveDate")}</button></div></div>` : ""}</div>
+  <div id="journeyw">${!OPH && !st.profile.exam_date ? `<div class="card exq"><h3>${t("examWhen")}</h3><p class="muted">${t("examWhenD")}</p><div class="row2"><input id="exd" type="month" min="${today().slice(0, 7)}" aria-label="${t("examWhen")}"><button class="primary slim" id="exs">${t("saveDate")}</button></div></div>` : ""}</div>
   ${OPH ? "" : `<div id="leaguew"></div>
   <div class="card"><div id="goalw">${goalCard([])}</div></div>`}
   ${soonStrip()}
@@ -854,7 +857,7 @@ function home() {
   if (!OPH) fillMission().then(fillJourney).then(fillLeague);
   $("smr2").onclick = smartReview;
   app.querySelectorAll("[data-tp]").forEach((b) => (b.onclick = () => practice({ kind: "topic", topic: b.dataset.tp })));
-  if ($("exs")) $("exs").onclick = async () => { const v = $("exd").value; if (!v) return; await api.updateProfile(null, v).catch(() => {}); st.profile.exam_date = v; home(); };
+  if ($("exs")) $("exs").onclick = async () => { const m = $("exd").value; if (!m) return; const v = examFromMonth(m); await api.updateProfile(null, v).catch(() => {}); st.profile.exam_date = v; home(); };
   if (!OPH) api.activity(st.user.id, TR(), 60).then((rows) => { if (S?.screen !== home) return; if ($("goalw")) { $("goalw").innerHTML = goalCard(rows); bindGoal(rows); } }).catch(() => {});
   api.myExams(st.user.id, TR()).then((list) => {
     const x = list.find((r) => r.status === "open"); if (!x || S?.screen !== home || !$("openx")) return;
@@ -1806,7 +1809,7 @@ function planSetup(back = route) {
     frame(`<div class="qbar"><button class="back" id="bk" aria-label="${t("back")}">${bwd()}</button><h2 style="flex:1">${t("jTitle")}</h2></div>
     <div class="card exb">
       <p class="muted">${t("jSetupD")}</p>
-      <div class="field"><label for="pe">${t("jExam")}</label><input id="pe" type="date" min="${today()}" value="${esc(f.exam)}"></div>
+      <div class="field"><label for="pe">${t("jExam")}</label><input id="pe" type="month" min="${today().slice(0, 7)}" value="${esc((f.exam || "").slice(0, 7))}"></div>
       <div class="field"><label>${t("jMinutes")}</label><div class="chips">${[15, 30, 45, 60, 90].map((m) => `<button class="chip pick ${m === f.minutes ? "cool" : ""}" data-m="${m}">${m} ${t("min")}</button>`).join("")}</div>
         <span class="muted" style="font-size:13px">≈ ${Math.min(30, Math.max(5, Math.round(f.minutes / 1.5)))} ${t("qs")} ${t("perDay")}</span></div>
       <div class="field"><label>${t("jDays")}</label><div class="chips">${[3, 4, 5, 6, 7].map((d) => `<button class="chip pick ${d === f.days ? "cool" : ""}" data-d="${d}">${d}</button>`).join("")}</div></div>
@@ -1821,7 +1824,7 @@ function planSetup(back = route) {
     app.querySelectorAll("[data-d]").forEach((b) => (b.onclick = () => { f.days = +b.dataset.d; draw(); }));
     app.querySelectorAll("[data-w]").forEach((b) => (b.onclick = () => { const k = b.dataset.w; f.weak = f.weak.includes(k) ? f.weak.filter((x) => x !== k) : [...f.weak, k]; draw(); }));
     $("ps").onclick = async () => {
-      f.exam = $("pe").value;
+      f.exam = $("pe").value ? examFromMonth($("pe").value) : "";
       const err = (m) => { $("er").textContent = m; $("er").hidden = false; };
       if (!f.exam || f.exam < today()) return err(t("jBadDate"));
       $("ps").disabled = true;
@@ -1871,7 +1874,7 @@ async function journey() {
     : `${x.type === "light" ? `<span class="wk">🔁 ${t("jLight")}</span>` : `<span class="wk">📝 ${x.mission} ${t("qs")}</span>`}${x.mock ? `<span class="wk mock">⏱ ${t("mock")} ${x.mock}</span>` : ""}`;
   frame(`<div class="qbar"><button class="back" id="bk" aria-label="${t("home")}">${bwd()}</button><h2 style="flex:1">${t("jTitle")}</h2><button class="ghost slim" id="ped">${t("jEdit")}</button></div>
   <div class="jhero">
-    <div class="jcount"><b>${left}</b><span>${left === 0 ? t("jExamDay") : t("daysLeft")}</span><small>${fmtDate(p.exam_date + "T12:00:00")}</small></div>
+    <div class="jcount"><b>${left}</b><span>${left === 0 ? t("jExamDay") : t("daysLeft")}</span><small>${fmtMonth(p.exam_date)}</small></div>
     <div class="jprog">${ringSvg(prog.pct, 96)}<span>${t("jPlanDone")}</span><small class="muted">${prog.done}/${prog.expected} ${t("jSessions")}</small></div>
   </div>
   <div class="banner jphase">${t("jPhase_" + phase)}</div>
@@ -2543,7 +2546,7 @@ function account() {
   <div class="card">
     <div class="acct"><span class="who"><bdi dir="ltr">${st.user.email ? esc(st.user.email) : t("guestName")}</bdi></span><span class="tag">${plan}${hasAccess() && until ? ` · ${t("until")} <bdi>${until}</bdi>` : ""}</span></div>
     ${!hasAccess() ? `<button class="primary" id="pl">${t("choose")}</button>` : ""}
-    <div class="field"><label for="ex">${t("changeExam")}</label><div class="row2"><input id="ex" type="date" value="${esc(p.exam_date || "")}"><button class="ghost" id="sx">${t("saveDate")}</button></div></div>
+    <div class="field"><label for="ex">${t("changeExam")}</label><div class="row2"><input id="ex" type="month" value="${esc((p.exam_date || "").slice(0, 7))}"><button class="ghost" id="sx">${t("saveDate")}</button></div></div>
     ${storeAvailable ? `<button class="ghost" id="mg">${t("manage")}</button>` : ""}
     ${SUPPORT ? `<p class="muted">${t("support")}: <bdi dir="ltr">${esc(SUPPORT)}</bdi></p>` : ""}
     <button class="ghost" id="lo">${t("logout")}</button>
@@ -2554,7 +2557,7 @@ function account() {
   st.ui.msg = null;
   $("bk").onclick = tools;
   if ($("pl")) $("pl").onclick = plans;
-  $("sx").onclick = async () => { const v = $("ex").value; if (!v) return; await api.updateProfile(null, v).catch(() => {}); st.profile.exam_date = v; flash("✓"); account(); };
+  $("sx").onclick = async () => { const m = $("ex").value; if (!m) return; const v = examFromMonth(m); await api.updateProfile(null, v).catch(() => {}); st.profile.exam_date = v; flash("✓"); account(); };
   if ($("mg")) $("mg").onclick = () => openUrl(Capacitor.getPlatform() === "android" ? "https://play.google.com/store/account/subscriptions" : "https://apps.apple.com/account/subscriptions");
   $("lo").onclick = () => { if (st.user.is_anonymous && !confirm(t("guestOut"))) return; logout(); };
   if ($("up")) $("up").onsubmit = async (ev) => {
