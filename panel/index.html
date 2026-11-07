@@ -20,12 +20,7 @@ iframe{flex:1;width:100%;border:0;background:var(--bg)}
 </style>
 </head>
 <body>
-<div class="bar"><div class="seg" role="tablist">
-  <button role="tab" data-app="musmach" aria-selected="true">מוסמך</button>
-  <button role="tab" data-app="yalla" aria-selected="false">يلّا</button>
-</div></div>
 <iframe id="musmach" title="מוסמך" data-src="../admin.html"></iframe>
-<iframe id="yalla" title="يلّا" data-src="../yalla/" hidden></iframe>
 <script>
 const KEY='panel-app';
 function pick(app){
@@ -34,8 +29,7 @@ function pick(app){
   try{localStorage.setItem(KEY,app)}catch(e){}
 }
 document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>pick(b.dataset.app));
-let start='musmach'; try{start=localStorage.getItem(KEY)||'musmach'}catch(e){}
-pick(start);
+pick('musmach');
 </script>
 </body>
 </html>
