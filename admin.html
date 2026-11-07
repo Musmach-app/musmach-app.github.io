@@ -1019,7 +1019,7 @@ async function viewStats() {
   const [{ data: r, error }, u, a, q, p, { data: cfg, error: ce }] = await Promise.all([
     sb.rpc("admin_stats", { p_days: statDays }),
     sb.from("profiles").select("id", { count: "exact", head: true }),
-    sb.from("profiles").select("id", { count: "exact", head: true }).gt("plan_until", now),
+    sb.from("entitlements").select("user_id").gt("until", now).eq("sandbox", false).limit(5000),
     sb.from("questions").select("id", { count: "exact", head: true }),
     sb.from("questions").select("id", { count: "exact", head: true }).eq("published", true),
     sb.from("app_settings").select("free_mode").eq("id", 1).maybeSingle(),
@@ -1044,8 +1044,19 @@ async function viewStats() {
     h += `<div class="card"><b>كل يوم: <span style="color:var(--ok)">■</span> سجّلوا جديد · <span style="color:var(--accent)">■</span> حلّوا أسئلة</b>${bars(ap.signups_by_day, ["n", "a"], ["var(--ok)", "var(--accent)"])}</div>`;
     h += `<div class="card"><b>أصعب المواضيع (أقل نسبة إجابات صحيحة)</b>${ap.hard_topics.length ? `<div class="tbl"><table><thead><tr><th>الموضوع</th><th>إجابات</th><th>صحيحة</th></tr></thead><tbody>${ap.hard_topics.map(t => `<tr><td class="he">${esc(trackLabel(t.track))} · ${esc(TOPICS_OF(t.track)[t.k] || t.k)}</td><td>${num(t.n)}</td><td>${t.pct}%</td></tr>`).join("")}</tbody></table></div>` : `<span class="muted">بتظهر لما يكون في 10 إجابات على الأقل بالموضوع.</span>`}</div>`;
   }
-  h += `<h3>📦 عام</h3>` + cardsHtml(me.role === "admin" ? [["كل المستخدمين", num(u.count)], ["اشتراكات فعّالة", num(a.count)], ["كل الأسئلة", num(q.count)], ["منشورة", num(p.count)]] : [["كل الأسئلة", num(q.count)], ["منشورة", num(p.count)]]);
+  h += `<h3>📦 عام</h3>` + cardsHtml(me.role === "admin" ? [["كل المستخدمين", num(u.count)], ["اشتراكات فعّالة", num(new Set((a.data || []).map(x => x.user_id)).size)], ["كل الأسئلة", num(q.count)], ["منشورة", num(p.count)]] : [["كل الأسئلة", num(q.count)], ["منشورة", num(p.count)]]);
   if (me.role !== "admin") { $("st").innerHTML = h; $("st").style.cssText = "display:flex;flex-direction:column;gap:12px"; return; }
+  {
+    const { data: pur } = await sb.from("purchases").select("price_usd,net_usd,sandbox,purchased_at,track").eq("sandbox", false).order("purchased_at", { ascending: false }).limit(5000);
+    const rows = pur || [], usd = x => "$" + (Math.round(x * 100) / 100).toLocaleString("en-US");
+    const netOf = x => Number(x.net_usd ?? (x.price_usd || 0) * 0.72), grossOf = x => Number(x.price_usd || 0);
+    const since = Date.now() - 30 * 864e5, m = rows.filter(x => new Date(x.purchased_at).getTime() >= since);
+    h += `<h3>💰 الأرباح</h3>` + cardsHtml([
+      ["صافي لجيبتك (تقريباً)", usd(rows.reduce((t, x) => t + netOf(x), 0)), "بعد عمولة Apple والضريبة، قبل ضريبة الدخل"],
+      ["المبيعات الكلية", usd(rows.reduce((t, x) => t + grossOf(x), 0)), `${num(rows.length)} عملية شراء`],
+      ["آخر 30 يوم", usd(m.reduce((t, x) => t + netOf(x), 0)), `${num(m.length)} عملية · مبيعات ${usd(m.reduce((t, x) => t + grossOf(x), 0))}`],
+    ]) + `<p class="muted">الشراء التجريبي (Apple) مش محسوب. الأرقام بتنحفظ تلقائياً من كل عملية شراء جديدة.</p>`;
+  }
   h += ce || !cfg ? `<div class="card"><b>الوضع المجاني</b><p class="muted">شغّل supabase/migration-5-free-mode.sql عشان يظهر هاد الخيار.</p></div>`
     : `<div class="card"><b>الوضع المجاني: ${cfg.free_mode ? "🟢 شغّال (كل الأسئلة ببلاش)" : "⚪ مطفي (بدها اشتراك)"}</b>
        <p class="muted">لما يكون شغّال، كل طالب مسجّل بيحل كل أسئلة مساره بدون اشتراك.</p>
