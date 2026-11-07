@@ -202,6 +202,17 @@
   .app.protect > .card > .qtop.hasimg { grid-column: 1; }
   .app.protect > .card > #fb { grid-column: 2; grid-row: 2 / span 6; align-self: start; }
   .app.protect #fb:empty { display: none; }
+  /* no page scrolling on the question screen: everything fits the window, only a long explanation scrolls inside its own column */
+  .app.protect { height: 100vh; box-sizing: border-box; padding-block: 14px; gap: 10px; }
+  .app.protect > .card { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 22px 30px; row-gap: 10px; align-content: start; }
+  .app.protect > .card #fb { max-height: calc(100vh - 245px); display: flex; flex-direction: column; gap: 10px; margin-top: 0 !important; }
+  .app.protect #fb .ex { flex: 1 1 auto; min-height: 0; overflow-y: auto; margin-top: 0; }
+  .app.protect #fb > * { flex: none; }
+  .app.protect #fb > .ex { flex: 1 1 auto; }
+  .app.protect .stickynav, .app.protect #fb #nx { position: static; }
+  .app.protect .qtext { font-size: 20px; line-height: 1.6; }
+  .app.protect .opt { padding-block: 11px; }
+  .app.protect .opts { gap: 8px; }
   .app.protect .ex { border-radius: 20px; padding: 22px; line-height: 1.8; font-size: 16px; }
   .app.protect .opt:focus-visible, .app.wide button:focus-visible, .app.wide .tab:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: 2px; }
 }
