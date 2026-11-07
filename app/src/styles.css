@@ -790,3 +790,6 @@ img{-webkit-user-drag:none;user-drag:none}
 
 .trk-card.soon.pic{background:linear-gradient(150deg,var(--g1),var(--g2));opacity:1;filter:saturate(.75);align-items:flex-start;justify-content:flex-end;gap:6px;box-shadow:0 10px 22px color-mix(in srgb,var(--g2) 28%,transparent)}
 .trk-card.soon.pic .trk-d{display:inline-block;position:absolute;top:10px;inset-inline-end:10px;z-index:3;background:rgba(255,255,255,.92);color:var(--g2);font-weight:700;font-size:12px;padding:3px 10px;border-radius:20px}
+
+/* a message above the colourful home header must not slide under the phone status bar */
+.app.hv #annw:not(:empty){padding-top:max(14px, env(safe-area-inset-top));margin-bottom:12px}
