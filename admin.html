@@ -25,6 +25,15 @@ h1,h2,h3{margin:0}
 .tabs.grp{flex-direction:column;gap:8px;align-items:stretch}
 .tabs .g{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .tabs .g>span{font-size:12px;font-weight:600;opacity:.6;min-width:70px}
+.trpick{border:1px solid var(--line);border-radius:12px;padding:0}
+.trpick>summary{padding:12px 14px;cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.trpick>summary::-webkit-details-marker{display:none}
+.trpick>summary::after{content:"▾";opacity:.6}
+.trpick[open]>summary::after{content:"▴"}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 12px 12px}
+.chip{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 11px;font-size:13px;cursor:pointer;white-space:nowrap}
+.chip input{display:none}
+.chip:has(input:checked){background:var(--accent);color:#fff;border-color:var(--accent)}
 .subtabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 .subtabs button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 14px;font:inherit;cursor:pointer}
 .subtabs button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -128,6 +137,15 @@ async function start() {
 }
 
 /* ---------- layout ---------- */
+function trPicker(cls, withAll) {
+  return `<details class="trpick" data-cls="${cls}"><summary><span>اختار المسارات</span><span class="muted trn">ولا واحد</span></summary><div class="chips">${withAll ? `<label class="chip"><input type="checkbox" id="gall"><b>كل المسارات</b></label>` : ""}${TRACKS.map(t => `<label class="chip"><input type="checkbox" class="${cls}" value="${t.id}">${esc(trackLabel(t.id))}</label>`).join("")}</div></details>`;
+}
+function wirePicker(cls) {
+  const d = document.querySelector(`.trpick[data-cls="${cls}"]`); if (!d) return;
+  const upd = () => { const n = d.querySelectorAll("." + cls + ":checked").length; d.querySelector(".trn").textContent = n ? n + " مختار" : "ولا واحد"; };
+  d.addEventListener("change", e => { if (e.target.id === "gall") d.querySelectorAll("." + cls).forEach(x => x.checked = e.target.checked); upd(); });
+  return upd;
+}
 const TAB_GROUPS = [["📚 المحتوى", ["list","edit","import","summaries","pastex","tracks"]], ["👥 الناس", ["users","insights","codes","messages","reports"]], ["📊 عام", ["ann","stats"]]];
 const EDITOR_TABS = ["list", "edit", "import", "stats"];   // what a limited admin may open
 function render() {
@@ -592,12 +610,12 @@ async function viewUsers() {
     (sv === "editors" ? `<div class="card"><h3>إضافة ادمن بصلاحيات محدودة</h3>
     <p class="muted">بيشوف الأسئلة (إضافة وتعديل واستيراد) وأرقام المسارات اللي بتحددها بس. ما بيشوف المستخدمين ولا الإشعارات ولا الإعلانات ولا الأكواد. لازم يكون سجّل حساب أولاً.</p>
     <input id="ed" type="email" dir="ltr" placeholder="إيميل الادمن">
-    <div class="row" style="justify-content:flex-start;flex-wrap:wrap">${TRACKS.map(t => `<label style="flex:none;display:flex;gap:6px;align-items:center"><input type="checkbox" class="edt" value="${t.id}">${esc(trackLabel(t.id))}</label>`).join("")}</div>
+    ${trPicker("edt", false)}
     <button class="btn" id="edgo" style="align-self:flex-start">إضافة / تحديث المسارات</button>
     <div id="edl" class="muted">بحمّل…</div></div>` : sv === "grant" ? `<div class="card"><h3>فتح مسارات لحساب</h3>
     <p class="muted">بتحط إيميل حساب وبتختار المسارات، والحساب بيقدر يدخلها ويتنقل بينها مجاناً لحد التاريخ اللي بتحدده. لازم يكون سجّل حساب أولاً.</p>
     <input id="gem" type="email" dir="ltr" placeholder="إيميل الحساب">
-    <div class="row" style="justify-content:flex-start;flex-wrap:wrap"><label style="flex:none;display:flex;gap:6px;align-items:center"><input type="checkbox" id="gall"><b>كل المسارات</b></label>${TRACKS.map(t => `<label style="flex:none;display:flex;gap:6px;align-items:center"><input type="checkbox" class="gtr" value="${t.id}">${esc(trackLabel(t.id))}</label>`).join("")}</div>
+    ${trPicker("gtr", true)}
     <div class="row" style="justify-content:flex-start;align-items:center"><span class="muted" style="flex:none">لحد:</span><input id="guntil" type="date" dir="ltr" style="flex:none;width:auto"><span class="muted" style="flex:none">(فاضي = بدون نهاية)</span></div>
     <button class="btn" id="ggo" style="align-self:flex-start">فتح المسارات</button>
     <div id="gmsg" class="muted"></div>
@@ -613,13 +631,14 @@ async function viewUsers() {
     $("edl").querySelectorAll("[data-ed]").forEach(b => b.onclick = async () => { if (!confirm("تشيل صلاحية " + b.dataset.ed + "؟")) return; const { error } = await sb.rpc("admin_set_editor", { p_email: b.dataset.ed, p_tracks: [] }); if (error) alert(error.message); loadEditors(); });
   };
   loadEditors();
+  const updE = wirePicker("edt");
   $("edgo").onclick = async () => {
     const em = $("ed").value.trim(), tr = [...document.querySelectorAll(".edt:checked")].map(x => x.value);
     if (!em) return;
     if (!tr.length) { alert("اختار مسار واحد على الأقل"); return; }
     const { error } = await sb.rpc("admin_set_editor", { p_email: em, p_tracks: tr });
     if (error) { alert(error.message.includes("no account") ? "ما في حساب بهاد الإيميل. لازم يسجّل بالتطبيق أولاً." : error.message); return; }
-    $("ed").value = ""; document.querySelectorAll(".edt").forEach(x => x.checked = false); loadEditors();
+    $("ed").value = ""; document.querySelectorAll(".edt").forEach(x => x.checked = false); updE(); loadEditors();
   };
     return;
   }
@@ -632,7 +651,7 @@ async function viewUsers() {
     $("gl").querySelectorAll("[data-rv]").forEach(a => a.onclick = async e => { e.preventDefault(); if (!confirm("تسكّر هذا المسار عن الحساب؟")) return; const { error: x } = await sb.rpc("admin_revoke_track", { p_user: a.dataset.rv, p_track: a.dataset.tr }); if (x) alert(x.message); loadGrants(); });
   };
   loadGrants();
-  $("gall").onchange = () => document.querySelectorAll(".gtr").forEach(x => x.checked = $("gall").checked);
+  const updG = wirePicker("gtr");
   $("ggo").onclick = async () => {
     const em = $("gem").value.trim(), tr = [...document.querySelectorAll(".gtr:checked")].map(x => x.value);
     if (!em) return;
@@ -641,7 +660,7 @@ async function viewUsers() {
     const { error } = await sb.rpc("admin_grant_tracks", { p_email: em, p_tracks: tr, p_until: u });
     if (error) { $("gmsg").textContent = error.message.includes("no account") ? "ما في حساب بهاد الإيميل. لازم يسجّل بالتطبيق أولاً." : error.message; return; }
     $("gmsg").textContent = `✓ انفتح ${tr.length} مسار لـ ${em}`;
-    $("gem").value = ""; $("guntil").value = ""; document.querySelectorAll(".gtr,#gall").forEach(x => x.checked = false); loadGrants();
+    $("gem").value = ""; $("guntil").value = ""; document.querySelectorAll(".gtr,#gall").forEach(x => x.checked = false); updG(); loadGrants();
   };
     return;
   }
