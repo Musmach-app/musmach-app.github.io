@@ -774,10 +774,10 @@ function lookBanners() {
     <p class="muted">بطاقات بتطلع بالتطبيق (بالرئيسية أو بكل الصفحات أو بصفحة الاشتراك) — فيها صورة، عنوان، نص، وزر بيفتح رابط أو صفحة بالتطبيق. ممكن تحدد لأي مسار ولأي تواريخ.</p>
     ${L.length ? L.map((b, i) => `<div class="row" style="justify-content:space-between;border-top:1px solid var(--line);padding-top:8px">
       <span>${b.image ? `<img src="${esc(b.image)}" style="width:54px;height:40px;object-fit:cover;border-radius:6px;vertical-align:middle"> ` : ""}<b dir="auto">${esc(b.he?.title || b.en?.title || "(بدون عنوان)")}</b><br>
-      <span class="muted">${placeN[b.place || "home"]} · ${b.tracks?.length ? b.tracks.map(trackLabel).join("، ") : "كل المسارات"}${b.until ? " · لحد " + esc(b.until) : ""}</span></span>
+      <span class="muted">${({ web: "🌐 الموقع", app: "📱 الآيفون", all: "📱🌐" })[b.platform || "all"]} · ${placeN[b.place || "home"]} · ${b.tracks?.length ? b.tracks.map(trackLabel).join("، ") : "كل المسارات"}${b.until ? " · لحد " + esc(b.until) : ""}</span></span>
       <span class="row"><span class="pill ${b.active === false ? "off" : ""}">${b.active === false ? "موقوف" : "ظاهر"}</span>
       <button class="btn ghost" data-bup="${i}" ${i ? "" : "disabled"}>⬆️</button><button class="btn ghost" data-bed="${i}">✏️ عدّل</button><button class="btn danger" data-bdel="${i}">🗑</button></span></div>`).join("") : `<p class="muted">ما في بانرات.</p>`}</div>`;
-  $("bnew").onclick = () => { L.push({ id: Date.now().toString(36), active: true, place: "home", tracks: [], he: { title: "" }, en: {} }); lookEditBan = L.length - 1; viewLook(); };
+  $("bnew").onclick = () => { L.push({ id: Date.now().toString(36), active: true, place: "home", platform: "web", tracks: [], he: { title: "" }, en: {} }); lookEditBan = L.length - 1; viewLook(); };
   document.querySelectorAll("[data-bed]").forEach(b => b.onclick = () => { lookEditBan = +b.dataset.bed; viewLook(); });
   document.querySelectorAll("[data-bup]").forEach(b => b.onclick = () => { const i = +b.dataset.bup; [L[i - 1], L[i]] = [L[i], L[i - 1]]; viewLook(); });
   document.querySelectorAll("[data-bdel]").forEach(b => b.onclick = () => { if (!confirm("تحذف البانر؟ (بينحذف من التطبيق بعد ما تحفظ)")) return; L.splice(+b.dataset.bdel, 1); viewLook(); });
@@ -788,21 +788,23 @@ function lookBanEdit() {
     <label style="flex-direction:row;display:flex;gap:8px;align-items:center"><input type="checkbox" id="b_on" style="width:auto" ${b.active === false ? "" : "checked"}> ظاهر</label>
     <div class="row"><div style="flex:1"><label>العنوان (עברית)</label><input id="b_ht" dir="rtl" value="${esc(b.he.title || "")}"></div><div style="flex:1"><label>Title (English)</label><input id="b_et" dir="ltr" value="${esc(b.en.title || "")}"></div></div>
     <div class="row"><div style="flex:1"><label>النص (עברית)</label><textarea id="b_hb" dir="rtl">${esc(b.he.body || "")}</textarea></div><div style="flex:1"><label>Text (English)</label><textarea id="b_eb" dir="ltr">${esc(b.en.body || "")}</textarea></div></div>
+    <div class="msg" style="background:var(--amber-soft);border-radius:10px;padding:8px 10px;font-size:13px">⚠️ أي بانر بيحكي عن ببيت أو كاش أو خصم بالموقع لازم يكون <b>🌐 الموقع بس</b> — إذا طلع بالآيفون Apple ممكن تسكّر التطبيق.</div>
     <label>الصورة (اختياري)</label>${imgPick("b_img", b.image)}
     <div class="row"><div style="flex:1"><label>لما يكبس عليه يفتح</label><select id="b_act">${Object.entries(LOOK_ACTS).map(([k, n]) => `<option value="${k}" ${(b.action || "") === k && !b.url ? "selected" : ""}>${n}</option>`).join("")}<option value="url" ${b.url ? "selected" : ""}>رابط خارجي…</option></select></div>
       <div style="flex:1"><label>الرابط (إذا اخترت رابط خارجي)</label><input id="b_url" dir="ltr" placeholder="https://…" value="${esc(b.url || "")}"></div></div>
     <div class="row"><div style="flex:1"><label>نص الزر (עברית) — فاضي = البطاقة كلها بتنكبس</label><input id="b_hbtn" dir="rtl" value="${esc(b.he.btn || "")}"></div><div style="flex:1"><label>Button (English)</label><input id="b_ebtn" dir="ltr" value="${esc(b.en.btn || "")}"></div></div>
     <div class="row"><div><label>وين يطلع</label><select id="b_place"><option value="home">الرئيسية</option><option value="all">فوق كل الصفحات</option><option value="plans">صفحة الاشتراك</option></select></div>
+      <div><label>بأي مكان</label><select id="b_plat"><option value="web">🌐 الموقع بس</option><option value="all">📱🌐 الآيفون والموقع</option><option value="app">📱 الآيفون بس</option></select></div>
       <div><label>لون الخلفية (فاضي = أبيض عادي)</label><div class="row"><input type="color" id="b_colp" value="${esc(b.color || "#1554A8")}" style="width:52px;padding:2px"><input id="b_col" dir="ltr" value="${esc(b.color || "")}" placeholder="#1554A8" style="width:110px"></div></div>
       <div><label>من تاريخ</label><input type="date" id="b_from" value="${esc(b.from || "")}"></div><div><label>لحد تاريخ</label><input type="date" id="b_until" value="${esc(b.until || "")}"></div></div>
     <label>لأي مسارات (ولا واحد = الكل)</label><div class="chips" style="padding:0">${TRACKS.map(t => `<label class="chip"><input type="checkbox" class="b_tr" value="${t.id}" ${(b.tracks || []).includes(t.id) ? "checked" : ""}>${esc(trackLabel(t.id))}</label>`).join("")}</div>
     <label>هيك بيطلع (تقريباً):</label><div id="b_prev"></div></div>`;
-  $("b_place").value = b.place || "home";
+  $("b_place").value = b.place || "home"; $("b_plat").value = b.platform || "all";
   const read = () => {
     b.active = $("b_on").checked; b.he.title = $("b_ht").value.trim(); b.en.title = $("b_et").value.trim(); b.he.body = $("b_hb").value.trim(); b.en.body = $("b_eb").value.trim();
     b.he.btn = $("b_hbtn").value.trim(); b.en.btn = $("b_ebtn").value.trim(); b.image = $("b_img").value.trim() || undefined;
     const a = $("b_act").value; if (a === "url") { b.url = $("b_url").value.trim() || undefined; delete b.action; } else { delete b.url; if (a) b.action = a; else delete b.action; }
-    b.place = $("b_place").value; b.color = $("b_col").value.trim() || undefined; b.from = $("b_from").value || undefined; b.until = $("b_until").value || undefined;
+    b.place = $("b_place").value; b.platform = $("b_plat").value; b.color = $("b_col").value.trim() || undefined; b.from = $("b_from").value || undefined; b.until = $("b_until").value || undefined;
     b.tracks = [...document.querySelectorAll(".b_tr:checked")].map(x => x.value);
     for (const k of ["he", "en"]) for (const f of ["title", "body", "btn"]) if (!b[k][f]) delete b[k][f];
     const c = b.color, x = b.he;
