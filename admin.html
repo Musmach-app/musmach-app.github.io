@@ -146,10 +146,10 @@ function wirePicker(cls) {
   d.addEventListener("change", e => { if (e.target.id === "gall") d.querySelectorAll("." + cls).forEach(x => x.checked = e.target.checked); upd(); });
   return upd;
 }
-const TAB_GROUPS = [["📚 المحتوى", ["list","edit","import","summaries","pastex","tracks"]], ["👥 الناس", ["users","insights","codes","messages","reports"]], ["📊 عام", ["look","ann","stats"]]];
+const TAB_GROUPS = [["📚 المحتوى", ["list","edit","import","summaries","pastex","tracks"]], ["👥 الناس", ["users","insights","codes","messages","reports"]], ["📊 عام", ["look","ann","stats","income"]]];
 const EDITOR_TABS = ["list", "edit", "import", "stats"];   // what a limited admin may open
 function render() {
-  const allTabs = [["list","الأسئلة"],["edit", editing?.id ? "تعديل سؤال" : "إضافة سؤال"],["import","استيراد"],["reports","التبليغات"],["messages","الرسائل"],["codes","أكواد الدخول"],["tracks","المسارات والمواضيع"],["users","المستخدمين"],["summaries","📘 ملخصات"],["pastex","📝 امتحانات سابقة"],["ann","📢 إعلانات"],["look","🎨 شكل التطبيق"],["stats","أرقام"]];
+  const allTabs = [["list","الأسئلة"],["edit", editing?.id ? "تعديل سؤال" : "إضافة سؤال"],["import","استيراد"],["reports","التبليغات"],["messages","الرسائل"],["codes","أكواد الدخول"],["tracks","المسارات والمواضيع"],["users","المستخدمين"],["summaries","📘 ملخصات"],["pastex","📝 امتحانات سابقة"],["ann","📢 إعلانات"],["look","🎨 شكل التطبيق"],["stats","أرقام"],["income","💰 الدخل"]];
   const isAdmin = me.role === "admin";
   const tabs = isAdmin ? allTabs : allTabs.filter(t => EDITOR_TABS.includes(t[0]));
   if (!tabs.some(t => t[0] === tab)) tab = "list";
@@ -161,7 +161,7 @@ function render() {
   $("ctr").onchange = () => { curTrack = $("ctr").value; localStorage.setItem("rs-track", curTrack); listState.topic = ""; editing = null; render(); };
   $("rf").onclick = () => { $("rf").disabled = true; render(); };
   $("out").onclick = async () => { await sb.auth.signOut(); me = null; start(); };
-  ({ list: viewList, edit: viewEdit, import: viewImport, reports: viewReports, messages: viewMessages, codes: viewCodes, tracks: viewTracks, users: viewUsers, insights: viewInsights, summaries: viewSummaries, pastex: viewPastEx, ann: viewAnn, look: viewLook, stats: viewStats })[tab]();
+  ({ list: viewList, edit: viewEdit, import: viewImport, reports: viewReports, messages: viewMessages, codes: viewCodes, tracks: viewTracks, users: viewUsers, insights: viewInsights, summaries: viewSummaries, pastex: viewPastEx, ann: viewAnn, look: viewLook, stats: viewStats, income: viewIncome })[tab]();
 }
 
 
@@ -932,6 +932,54 @@ async function lookHistory() {
   $("lbody").innerHTML = `<div class="card"><h3>🕘 النسخ السابقة</h3><p class="muted">كل مرة بتحفظ، النسخة اللي قبلها بتنحفظ هون. "رجّع" بيحطها مكان الحالية (لازم بعدها تكبس 💾 احفظ).</p>
     ${(data || []).map(h => `<div class="row" style="justify-content:space-between;border-top:1px solid var(--line);padding-top:8px"><span><b dir="ltr">${esc(fmtDT(h.saved_at))}</b><br><span class="muted">${esc(sum(h.config || {}))}</span></span><button class="btn ghost" data-hr="${h.id}">↩️ رجّع</button></span></div>`).join("") || `<p class="muted">لسا ما في نسخ سابقة.</p>`}</div>`;
   document.querySelectorAll("[data-hr]").forEach(b => b.onclick = () => { const h = data.find(x => x.id === +b.dataset.hr); const meta = look._meta; look = JSON.parse(JSON.stringify(h.config || {})); look._meta = meta; lookSub = "banners"; viewLook(); });
+}
+
+/* ---------- 💰 income: Apple (automatic) + Bit (entered by hand) — cash is not tracked here ---------- */
+let incomeYear = new Date().getFullYear();
+async function viewIncome() {
+  const y = incomeYear, from = `${y}-01-01`, to = `${y + 1}-01-01`;
+  $("body").innerHTML = `<div class="card"><span class="muted">بحمّل…</span></div>`;
+  const [{ data: ap, error: e1 }, { data: bit, error: e2 }] = await Promise.all([
+    sb.from("purchases").select("id,user_id,track,type,price_usd,net_usd,purchased_at,note").eq("sandbox", false).gte("purchased_at", from).lt("purchased_at", to).order("purchased_at", { ascending: false }),
+    sb.from("income_bit").select("*").gte("paid_at", from).lt("paid_at", to).order("paid_at", { ascending: false })]);
+  if (e1 || e2) { $("body").innerHTML = `<div class="msg bad">${esc((e1 || e2).message)}</div>`; return; }
+  const ids = [...new Set((ap || []).map(p => p.user_id).filter(Boolean))], em = {};
+  if (ids.length) { const { data: pr } = await sb.from("profiles").select("id,email").in("id", ids); (pr || []).forEach(p => em[p.id] = p.email); }
+  const usd = x => "$" + (Math.round(+x * 100) / 100).toLocaleString("en-US"), ils = x => "₪" + (Math.round(+x * 100) / 100).toLocaleString("en-US");
+  const netOf = p => p.net_usd != null ? +p.net_usd : +(p.price_usd || 0) * 0.72;
+  const rows = [
+    ...(ap || []).map(p => ({ d: String(p.purchased_at).slice(0, 10), src: "Apple", who: em[p.user_id] || "—", tr: p.track, gross: +(p.price_usd || 0), net: netOf(p), cur: "USD", rcpt: "", id: null, est: p.net_usd == null })),
+    ...(bit || []).map(b => ({ d: b.paid_at, src: "ביט", who: b.email || "—", tr: b.track, gross: +b.amount_ils, net: +b.amount_ils, cur: "ILS", rcpt: b.receipt_no || "", note: b.note || "", id: b.id }))
+  ].sort((a, b) => (a.d < b.d ? 1 : -1));
+  const months = {};
+  rows.forEach(r => { const m = r.d.slice(0, 7), x = months[m] || (months[m] = { ag: 0, an: 0, b: 0, n: 0 }); x.n++; if (r.cur === "USD") { x.ag += r.gross; x.an += r.net; } else x.b += r.gross; });
+  const tot = Object.values(months).reduce((t, m) => ({ ag: t.ag + m.ag, an: t.an + m.an, b: t.b + m.b, n: t.n + m.n }), { ag: 0, an: 0, b: 0, n: 0 });
+  const trOpts = TRACKS.map(t => `<option value="${t.id}">${esc(trackLabel(t.id))}</option>`).join("");
+  $("body").innerHTML = `<div class="card"><div class="row" style="justify-content:space-between;align-items:center"><h3 style="margin:0">💰 الدخل ${y}</h3>
+      <span><button class="btn ghost" id="iy-" style="flex:none">→ ${y - 1}</button> <button class="btn ghost" id="iy+" style="flex:none">${y + 1} ←</button> <button class="btn" id="icsv" style="flex:none">⬇️ تنزيل Excel</button></span></div>
+    ${cardsHtml([["Apple (مبيعات)", usd(tot.ag), "قبل عمولة Apple والضريبة"], ["Apple (صافي تقريباً)", usd(tot.an), "اللي بيوصل لحسابك"], ["ביט", ils(tot.b), "حسب اللي سجّلته"], ["عمليات", num(tot.n)]])}
+    <p class="muted">Apple بتنضاف لحالها مع كل شراء. الביט بتسجّله انت تحت. النقدي مش محسوب هون. الصافي من Apple تقديري، والرقم النهائي بالشيكل بيكون بتقرير Apple الشهري وبحسابك البنكي.</p></div>
+  <div class="card"><h3>➕ دفعة ביט</h3>
+    <div class="row" style="flex-wrap:wrap"><input id="bd" type="date" dir="ltr" value="${new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jerusalem" })}" style="flex:none;width:auto"><input id="ba" type="number" min="1" step="1" dir="ltr" placeholder="المبلغ ₪" style="flex:none;width:120px"><input id="be" type="email" dir="ltr" placeholder="إيميل الطالب"><select id="bt" style="flex:none;width:auto"><option value="">المسار</option>${trOpts}</select><input id="br" dir="ltr" placeholder="رقم הקבלה" style="flex:none;width:140px"><input id="bn" placeholder="ملاحظة"></div>
+    <button class="btn" id="bgo" style="align-self:flex-start">حفظ</button><div id="bmsg" class="muted"></div></div>
+  <div class="card"><h3>كل شهر</h3><div class="tbl"><table><thead><tr><th>الشهر</th><th>Apple مبيعات</th><th>Apple صافي</th><th>ביט</th><th>عمليات</th></tr></thead><tbody>${Object.keys(months).sort().reverse().map(m => `<tr><td dir="ltr" style="text-align:start">${m}</td><td>${usd(months[m].ag)}</td><td>${usd(months[m].an)}</td><td>${ils(months[m].b)}</td><td>${num(months[m].n)}</td></tr>`).join("") || `<tr><td colspan="5" class="muted">ما في دخل بهالسنة</td></tr>`}</tbody></table></div></div>
+  <div class="card"><h3>كل العمليات</h3><div class="tbl"><table><thead><tr><th>تاريخ</th><th>من وين</th><th>مين</th><th>المسار</th><th>المبلغ</th><th>صافي</th><th>קבלה</th><th></th></tr></thead><tbody>${rows.map(r => `<tr><td dir="ltr" style="text-align:start">${esc(r.d)}</td><td>${r.src === "Apple" ? "🍎 Apple" : "💙 ביט"}</td><td dir="ltr" style="text-align:start">${esc(r.who)}${r.note ? `<br><span class="muted">${esc(r.note)}</span>` : ""}</td><td class="he">${esc(r.tr ? trackLabel(r.tr) : "—")}</td><td>${r.cur === "USD" ? usd(r.gross) : ils(r.gross)}</td><td>${r.cur === "USD" ? usd(r.net) + (r.est ? ` <span class="muted">~</span>` : "") : ils(r.net)}</td><td dir="ltr">${esc(r.rcpt)}</td><td>${r.id ? `<button class="btn ghost" data-bdel="${r.id}" style="flex:none;padding:4px 10px;color:#C0392B">🗑</button>` : ""}</td></tr>`).join("") || `<tr><td colspan="8" class="muted">ما في</td></tr>`}</tbody></table></div></div>`;
+  $("iy-").onclick = () => { incomeYear--; viewIncome(); }; $("iy+").onclick = () => { incomeYear++; viewIncome(); };
+  $("bgo").onclick = async () => {
+    const amount = +$("ba").value; if (!(amount > 0)) { $("bmsg").textContent = "اكتب المبلغ"; return; }
+    $("bgo").disabled = true;
+    const { error } = await sb.from("income_bit").insert({ paid_at: $("bd").value, amount_ils: amount, email: $("be").value.trim() || null, track: $("bt").value || null, receipt_no: $("br").value.trim() || null, note: $("bn").value.trim() || null });
+    if (error) { $("bmsg").textContent = error.message; $("bgo").disabled = false; return; }
+    viewIncome();
+  };
+  $("body").querySelectorAll("[data-bdel]").forEach(b => b.onclick = async () => { if (!confirm("تحذف هاي الدفعة من السجل؟")) return; await sb.from("income_bit").delete().eq("id", +b.dataset.bdel); viewIncome(); });
+  $("icsv").onclick = () => {
+    const q = v => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const lines = [["תאריך", "מקור", "לקוח", "מסלול", "סכום", "מטבע", "נטו", "מספר קבלה", "הערה"].map(q).join(",")]
+      .concat(rows.slice().reverse().map(r => [r.d, r.src, r.who, r.tr || "", r.gross, r.cur, Math.round(r.net * 100) / 100, r.rcpt, r.note || ""].map(q).join(",")));
+    const blob = new Blob(["﻿" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `musmach-income-${y}.csv`; a.click();
+  };
 }
 
 /* ---------- user insights: why people stopped ---------- */
