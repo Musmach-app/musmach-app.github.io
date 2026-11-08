@@ -857,7 +857,7 @@ async function lookSettings() {
   const [{ data: setg }, { data: fc }, { data: crs }] = await Promise.all([
     sb.from("app_settings").select("students_open").eq("id", 1).maybeSingle(),
     sb.rpc("free_counts"),
-    sb.from("tracks").select("id,he,icon,profession,year,coming_soon,access,sort").eq("kind", "course").order("sort")]);
+    sb.from("tracks").select("id,he,icon,profession,year,closed,access,sort").eq("kind", "course").order("sort")]);
   const freeNow = Object.fromEntries((fc || []).map(r => [r.track, r.n]));
   const tracksAll = TRACKS.filter(t => t.kind !== "course" && t.id !== "archive_medicine");
   const courses = crs || [];
@@ -868,7 +868,7 @@ async function lookSettings() {
       <b>المهن المفتوحة للطلاب</b><p class="muted">الباقي بيطلع «בקרוב». المهنة بدها كورسات (تحت) عشان يكون فيها إشي.</p>
       <div class="row" style="justify-content:flex-start;flex-wrap:wrap">${Object.entries(PROF_N).map(([k, n]) => `<label style="display:flex;gap:6px;align-items:center;flex:none"><input type="checkbox" data-pf="${k}" style="width:auto" ${PF[k] ? "checked" : ""}><span class="he">${n}</span></label>`).join("")}</div>`) +
     box("📚 كورسات الطلاب", `<p class="muted">كل كورس إله مواضيع وأسئلة (بتختاره من فوق كمسار). «בקרוב» = ظاهر ومقفول. هاد بيتغيّر فوراً.</p>
-      <div class="tbl"><table><thead><tr><th>الكورس</th><th>المهنة</th><th>سنة</th><th>أسئلة ببلاش</th><th>الحالة</th></tr></thead><tbody>${courses.map(c => `<tr><td class="he">${esc(c.icon || "")} ${esc(c.he)}</td><td class="he">${esc(PROF_N[c.profession] || c.profession || "")}</td><td>${YEAR_N[(c.year || 1) - 1] || ""}</td><td>${freeNow[c.id] || 0}</td><td><button class="btn ghost" data-cs="${esc(c.id)}" data-v="${c.coming_soon ? 0 : 1}" style="flex:none">${c.coming_soon ? "🟡 בקרוב → افتح" : "🟢 مفتوح → בקרוב"}</button></td></tr>`).join("") || `<tr><td colspan="5" class="muted">ما في كورسات</td></tr>`}</tbody></table></div>
+      <div class="tbl"><table><thead><tr><th>الكورس</th><th>المهنة</th><th>سنة</th><th>أسئلة ببلاش</th><th>الحالة</th></tr></thead><tbody>${courses.map(c => `<tr><td class="he">${esc(c.icon || "")} ${esc(c.he)}</td><td class="he">${esc(PROF_N[c.profession] || c.profession || "")}</td><td>${YEAR_N[(c.year || 1) - 1] || ""}</td><td>${freeNow[c.id] || 0}</td><td><button class="btn ghost" data-cs="${esc(c.id)}" data-v="${c.closed ? 0 : 1}" style="flex:none">${c.closed ? "🟡 בקרוב → افتح" : "🟢 مفتوح → בקרוב"}</button></td></tr>`).join("") || `<tr><td colspan="5" class="muted">ما في كورسات</td></tr>`}</tbody></table></div>
       <form id="fc" class="row" style="flex-wrap:wrap"><input id="ci" dir="ltr" placeholder="id, e.g. stn1phys" style="max-width:160px"><input id="ch" dir="rtl" placeholder="اسم الكورس بالعبري"><input id="ce" dir="ltr" placeholder="Course name in English"><input id="cc" placeholder="أيقونة 🫁" style="max-width:90px">
         <select id="cp">${Object.entries(PROF_N).map(([k, n]) => `<option value="${k}">${n}</option>`).join("")}</select><select id="cy">${YEAR_N.map((y, i) => `<option value="${i + 1}">سنة ${y}</option>`).join("")}</select><button class="btn" type="submit">➕ كورس جديد (בקרוב)</button></form>
       <p class="muted">الكورس الجديد بيطلع «בקרוב». ضيفله مواضيع وأسئلة من تبويب المسارات، وبعدين افتحه.</p>`) +
@@ -887,13 +887,13 @@ async function lookSettings() {
       <div id="nst" class="muted">بحمّل آخر التذكيرات…</div>`);
   // instant switches
   $("sto").onclick = async () => { const { error } = await sb.from("app_settings").update({ students_open: !setg?.students_open }).eq("id", 1); if (error) alert(error.message); lookSettings(); };
-  document.querySelectorAll("[data-cs]").forEach(b => b.onclick = async () => { const { error } = await sb.from("tracks").update({ coming_soon: b.dataset.v === "1" }).eq("id", b.dataset.cs); if (error) alert(error.message); lookSettings(); });
+  document.querySelectorAll("[data-cs]").forEach(b => b.onclick = async () => { const { error } = await sb.from("tracks").update({ closed: b.dataset.v === "1", coming_soon: false }).eq("id", b.dataset.cs); if (error) alert(error.message); lookSettings(); });
   $("fc").onsubmit = async e => {
     e.preventDefault();
     const id = $("ci").value.trim().toLowerCase(), he = $("ch").value.trim(), en = $("ce").value.trim();
     if (!/^[a-z0-9_]+$/.test(id) || !he || !en) return alert("عبّي المعرّف (أحرف إنجليزية صغيرة) والاسمين");
     const access = courses.find(c => c.profession === $("cp").value)?.access || null;
-    const { error } = await sb.from("tracks").insert({ id, he, en, icon: $("cc").value.trim() || "📘", kind: "course", profession: $("cp").value, year: +$("cy").value, access, coming_soon: true, active: false, sort: (courses.length + 1) * 10 });
+    const { error } = await sb.from("tracks").insert({ id, he, en, icon: $("cc").value.trim() || "📘", kind: "course", profession: $("cp").value, year: +$("cy").value, access, closed: true, coming_soon: false, active: false, sort: (courses.length + 1) * 10 });
     if (error) return alert(error.message);
     await loadMeta(); lookSettings();
   };
