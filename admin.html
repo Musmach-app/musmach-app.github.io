@@ -747,7 +747,7 @@ async function viewLook() {
     if (error) { $("body").innerHTML = `<div class="card msg bad">${esc(error.message)}</div>`; return; }
     look = data?.config || {}; lookSaved = JSON.stringify(look); look._meta = { at: data?.updated_at, by: data?.updated_by }; lookSaved = JSON.stringify(look);
   }
-  const SUBS = [["settings","⚙️ إعدادات"],["lessons","📖 الدروس"],["banners","📣 بانرات"],["colors","🎨 ألوان"],["texts","✏️ نصوص"],["sections","👁️ إظهار/إخفاء"],["tracks","🖼️ المسارات"],["contact","📞 تواصل"],["maint","🛠️ صيانة وتحديث"],["css","🧩 CSS"],["history","🕘 السجل"]];
+  const SUBS = [["settings","⚙️ إعدادات"],["lessons","⚡ חזרה מהירה (البطاقات)"],["banners","📣 بانرات"],["colors","🎨 ألوان"],["texts","✏️ نصوص"],["sections","👁️ إظهار/إخفاء"],["tracks","🖼️ المسارات"],["contact","📞 تواصل"],["maint","🛠️ صيانة وتحديث"],["css","🧩 CSS"],["history","🕘 السجل"]];
   $("body").innerHTML = `<div class="card" style="gap:8px"><div class="row" style="justify-content:space-between"><div><b>🎨 التحكم بشكل التطبيق</b><div class="muted">كل تغيير هون بيوصل للتطبيق والموقع بدون تحديث من Apple، أول ما الطالب يفتح التطبيق أو يرجعله.${look._meta?.at ? ` آخر حفظ: ${esc(fmtDT(look._meta.at))}` : ""}</div></div>
     <button class="btn" id="lsave" ${lookDirty() ? "" : "disabled"}>💾 احفظ وانشر</button></div>${lookDirty() ? `<div class="pill off" style="align-self:flex-start">في تغييرات مش محفوظة</div>` : ""}</div>
     <div class="subtabs">${SUBS.map(([k,n]) => `<button data-ls="${k}" class="${lookSub===k?"on":""}">${n}</button>`).join("")}</div><div id="lbody"></div>`;
@@ -944,7 +944,7 @@ async function lookLessons() {
     if ($("ldel")) $("ldel").onclick = async () => { if (!confirm("تحذف الدرس؟ ما برجع.")) return; const { error } = await sb.from("lessons").delete().eq("id", l.id); if (error) return alert(error.message); lesEdit = null; lookLessons(); };
     return;
   }
-  $("lbody").innerHTML = `<div class="card" style="gap:8px"><div class="row" style="justify-content:space-between"><h3>📖 دروس البطاقات</h3><button class="btn" id="lnew" style="flex:none">➕ درس جديد</button></div>
+  $("lbody").innerHTML = `<div class="card" style="gap:8px"><div class="row" style="justify-content:space-between"><h3>⚡ חזרה מהירה (دروس البطاقات)</h3><button class="btn" id="lnew" style="flex:none">➕ درس جديد</button></div>
     <div class="row" style="justify-content:flex-start"><label style="flex:none">الكورس:</label><select id="lcr" style="flex:none">${courses.map(c => `<option value="${c.id}" ${c.id === cur ? "selected" : ""}>${esc(c.icon || "")} ${esc(c.he)}</option>`).join("")}</select></div>
     <p class="muted">كل تغيير هون بيوصل فوراً (بدون 💾). «مخفي» = بس إنت (أدمن) بتشوفه بالتطبيق. «ببلاش» = مفتوح لكل الطلاب حتى بدون اشتراك.</p>
     <div class="tbl"><table><thead><tr><th>#</th><th>الدرس</th><th>بطاقات</th><th>ظاهر؟</th><th>ببلاش؟</th><th></th></tr></thead><tbody>${(rows || []).map(r => `<tr><td>${r.sort}</td><td class="he">${esc(r.icon || "")} ${esc(r.title_he)} <span class="muted" dir="ltr">${esc(r.topic || "")}</span></td><td>${(r.cards || []).length}</td>
