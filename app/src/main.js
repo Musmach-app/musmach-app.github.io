@@ -877,7 +877,7 @@ async function pastExams() {
   let list = [];
   try { list = await api.sessionList(TR()); } catch { $("pl").innerHTML = `<p class="muted">${t("adErr")}</p>`; return; }
   if (!list.length) { $("pl").innerHTML = `<div class="card" style="text-align:center"><div style="font-size:40px">🔒</div><h3>${t("pastLocked")}</h3><p class="muted" style="margin:0">${t("pastEmpty")}</p></div>`; return; }
-  $("pl").innerHTML = `<div class="list">${list.map((x) => `<button class="li" data-s="${x.id}"><span>${x.month ? esc(MONTHS[st.lang === "he" ? "he" : "en"][x.month - 1]) + " " : ""}${x.year}${x.label ? ` <span class="sub">${esc(x.label)}</span>` : ""}</span><span class="count">${hasAccess() ? "" : "🔒 "}${x.n} ${t("qs")}</span></button>`).join("")}</div>`;
+  $("pl").innerHTML = `<div class="list">${list.map((x) => `<button class="li" data-s="${x.id}"><span>${x.month ? esc(MONTHS[st.lang === "he" ? "he" : "en"][x.month - 1]) + " " : ""}${x.year}${x.label ? ` <span class="sub">${esc(x.label)}</span>` : ""}</span><span class="count">${x.n === "🔒" || !hasAccess() ? "🔒" : `${x.n} ${t("qs")}`}</span></button>`).join("")}</div>`;
   $("pl").querySelectorAll("[data-s]").forEach((b) => { b.onclick = async () => {
     if (!hasAccess()) { st.ui.fromTools = false; return plans(); } // free users see the list; each exam opens the plans page
     b.disabled = true;
