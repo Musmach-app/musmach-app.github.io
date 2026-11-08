@@ -735,7 +735,7 @@ async function viewUsers() {
 /* ---------- 🎨 app look: change the app without an update (app_ui.config, read by app/src/remote.js) ---------- */
 const LOOK_SECTIONS = { mission: "🎯 مهمة اليوم", progress: "📊 بطاقة التقدّم", stats4: "🔢 الأرقام الأربعة (صح/غلط/…)", pastex: "📝 امتحانات سابقة", summaries: "📘 ملخصات", actions: "🧩 الأزرار الأربعة (امتحان/ذكي/أخطاء/محفوظات)", newexam: "  ↳ امتحان جديد", smart: "  ↳ مراجعة ذكية", mistakes: "  ↳ الأخطاء", bookmarks: "  ↳ المحفوظات", journey: "🗺️ موعد الامتحان والرحلة", league: "🏆 الدوري", goal: "📅 الهدف اليومي", heroChar: "🧑‍⚕️ الشخصية فوق", heroDeco: "✨ الرسومات الصغيرة فوق", lang: "🌐 زر اللغة עב/EN", instagram: "📷 زر إنستغرام", whatsapp: "💬 زر واتساب", navExams: "⬇️ تبويب الامتحانات تحت", navQs: "⬇️ تبويب الأسئلة تحت", navStats: "⬇️ تبويب الإحصائيات تحت",
   ghReady: "🩺 الرئيسية الجديدة: دائرة الجاهزية وعدد الأيام للامتحان", ghGo: "  ↳ بلاطة «המשך תרגול»", ghWeak: "  ↳ «כדאי לחזק» (المواضيع الضعيفة)", ghStreak: "  ↳ 🔥 عداد الأيام فوق", ghMini: "  ↳ الأزرار الصغيرة (مراجعة ذكية/محفوظات)",
-  stuLeague: "🎓 الطلاب: ליגת הכיתה", stuFinal: "🎓 الطلاب: מבחן מסכם", stuCards: "🎓 الطلاب: כרטיסיות הקורס", stuQuiz: "🎓 الطلاب: שאלון ידע", stuMix: "🎓 الطلاب: תרגול מעורב", stuFree: "🎓 الطلاب: شريط «שאלות חינם» والاشتراك" };
+  stuLeague: "🎓 الطلاب: ליגת הכיתה", stuFinal: "🎓 الطلاب: מבחן מסכם", stuCards: "🎓 الطلاب: כרטיסיות הקורס", stuQuiz: "🎓 الطلاب: שאלון ידע", stuMix: "🎓 الطلاب: תרגול מעורב", stuLessons: "🎓 الطلاب: 📖 שיעורים (بطاقات)", stuFree: "🎓 الطلاب: شريط «שאלות חינם» والاشتراك" };
 const LOOK_COLORS = { accent: "اللون الأساسي (أزرار)", "accent-soft": "لون فاتح للخلفيات الصغيرة", "on-accent": "لون الكتابة فوق الأزرار", bg: "خلفية التطبيق", surface: "خلفية البطاقات", ink: "لون الكتابة", muted: "كتابة باهتة", line: "الخطوط والحدود", amber: "برتقالي (تنبيهات)", ok: "أخضر (صح)", bad: "أحمر (غلط)", g1: "التدرّج فوق — لون 1", g2: "التدرّج فوق — لون 2" };
 const LOOK_ACTS = { "": "بدون", plans: "صفحة الاشتراك", contact: "صفحة تواصل", pastex: "امتحانات سابقة", summaries: "ملخصات", league: "الدوري", exams: "امتحاناتي", stats: "الإحصائيات", whatsapp: "واتساب", instagram: "إنستغرام" };
 let look = null, lookSaved = "", lookSub = "settings", lookText = { q: "" }, lookEditBan = null, appTexts = null, appPhrases = null;
@@ -747,13 +747,13 @@ async function viewLook() {
     if (error) { $("body").innerHTML = `<div class="card msg bad">${esc(error.message)}</div>`; return; }
     look = data?.config || {}; lookSaved = JSON.stringify(look); look._meta = { at: data?.updated_at, by: data?.updated_by }; lookSaved = JSON.stringify(look);
   }
-  const SUBS = [["settings","⚙️ إعدادات"],["banners","📣 بانرات"],["colors","🎨 ألوان"],["texts","✏️ نصوص"],["sections","👁️ إظهار/إخفاء"],["tracks","🖼️ المسارات"],["contact","📞 تواصل"],["maint","🛠️ صيانة وتحديث"],["css","🧩 CSS"],["history","🕘 السجل"]];
+  const SUBS = [["settings","⚙️ إعدادات"],["lessons","📖 الدروس"],["banners","📣 بانرات"],["colors","🎨 ألوان"],["texts","✏️ نصوص"],["sections","👁️ إظهار/إخفاء"],["tracks","🖼️ المسارات"],["contact","📞 تواصل"],["maint","🛠️ صيانة وتحديث"],["css","🧩 CSS"],["history","🕘 السجل"]];
   $("body").innerHTML = `<div class="card" style="gap:8px"><div class="row" style="justify-content:space-between"><div><b>🎨 التحكم بشكل التطبيق</b><div class="muted">كل تغيير هون بيوصل للتطبيق والموقع بدون تحديث من Apple، أول ما الطالب يفتح التطبيق أو يرجعله.${look._meta?.at ? ` آخر حفظ: ${esc(fmtDT(look._meta.at))}` : ""}</div></div>
     <button class="btn" id="lsave" ${lookDirty() ? "" : "disabled"}>💾 احفظ وانشر</button></div>${lookDirty() ? `<div class="pill off" style="align-self:flex-start">في تغييرات مش محفوظة</div>` : ""}</div>
     <div class="subtabs">${SUBS.map(([k,n]) => `<button data-ls="${k}" class="${lookSub===k?"on":""}">${n}</button>`).join("")}</div><div id="lbody"></div>`;
   document.querySelectorAll("[data-ls]").forEach(b => b.onclick = () => { lookSub = b.dataset.ls; lookEditBan = null; viewLook(); });
   $("lsave").onclick = lookSave;
-  ({ settings: lookSettings, banners: lookBanners, colors: lookColors, texts: lookTexts, sections: lookSections, tracks: lookTracks, contact: lookContact, maint: lookMaint, css: lookCss, history: lookHistory })[lookSub]();
+  ({ settings: lookSettings, lessons: lookLessons, banners: lookBanners, colors: lookColors, texts: lookTexts, sections: lookSections, tracks: lookTracks, contact: lookContact, maint: lookMaint, css: lookCss, history: lookHistory })[lookSub]();
 }
 function lookTouch() { const b = $("lsave"); if (b) b.disabled = !lookDirty(); }
 async function lookSave() {
@@ -915,6 +915,47 @@ async function lookSettings() {
   for (const [id, k] of [["nti", "title"], ["nt0", "t0"], ["nt1", "t1"], ["ntn", "tn"]]) $(id).oninput = () => { const v = $(id).value; if (v.trim()) N[k] = v; else delete N[k]; lookTouch(); };
   const { data: ns } = await sb.from("nudge_sent").select("sent_at,ok").order("sent_at", { ascending: false }).limit(200);
   if ($("nst")) $("nst").textContent = ns?.length ? `آخر 7 أيام: انبعت ${(ns || []).filter(x => x.ok && Date.now() - Date.parse(x.sent_at) < 7 * 864e5).length} تذكير.` : "لسا ما انبعت ولا تذكير.";
+}
+
+/* card lessons for students: saved straight to the lessons table (no 💾 needed) */
+let lesEdit = null;
+async function lookLessons() {
+  const courses = TRACKS.filter(t => t.kind === "course");
+  const cur = courses.find(c => c.id === curTrack)?.id || courses[0]?.id;
+  if (!cur) { $("lbody").innerHTML = `<div class="card muted">ما في كورسات.</div>`; return; }
+  const { data: rows, error } = await sb.from("lessons").select("id,topic,sort,title_he,icon,cards,is_free,published").eq("track", cur).order("sort");
+  if (error) { $("lbody").innerHTML = `<div class="card msg bad">${esc(error.message)}</div>`; return; }
+  if (lesEdit) {
+    const l = lesEdit === "new" ? { id: null, topic: "", sort: ((rows || []).length + 1) * 10, title_he: "", icon: "📘", cards: [], is_free: false, published: false } : rows.find(r => r.id === lesEdit);
+    $("lbody").innerHTML = `<div class="card" style="gap:8px"><div class="row" style="justify-content:space-between"><h3>✏️ ${l.id ? "تعديل درس" : "درس جديد"} · ${esc(trackLabel(cur))}</h3><button class="btn ghost" id="lback" style="flex:none">→ رجوع</button></div>
+      <div class="row"><input id="lt" dir="rtl" placeholder="عنوان الدرس" value="${esc(l.title_he)}"><input id="li" placeholder="أيقونة" value="${esc(l.icon || "")}" style="max-width:80px"><input id="ltp" dir="ltr" placeholder="topic id (ph04)" value="${esc(l.topic || "")}" style="max-width:130px"><input id="ls" type="number" value="${l.sort}" style="max-width:80px" title="الترتيب"></div>
+      <p class="muted">البطاقات (JSON). كل بطاقة: <span dir="ltr">{"k","t","p","flow":[],"table":{"h":[],"r":[[]]},"list":[],"tip","warn"}</span> — والأخيرة <span dir="ltr">"type":"sum"</span> مع <span dir="ltr">"pts"</span> و <span dir="ltr">"q":{"q","o":[],"a"}</span>. نص بين ** ** بيطلع عريض.</p>
+      <textarea id="lj" dir="ltr" style="min-height:420px;font-family:monospace;font-size:12.5px">${esc(JSON.stringify(l.cards, null, 1))}</textarea>
+      <div class="row" style="justify-content:flex-start"><button class="btn" id="lsv" style="flex:none">💾 احفظ الدرس</button>${l.id ? `<button class="btn danger" id="ldel" style="flex:none">🗑 احذف</button>` : ""}</div></div>`;
+    $("lback").onclick = () => { lesEdit = null; lookLessons(); };
+    $("lsv").onclick = async () => {
+      let cards; try { cards = JSON.parse($("lj").value); if (!Array.isArray(cards)) throw new Error("لازم تكون قائمة [ ]"); } catch (e) { return alert("في غلط بالـJSON: " + e.message); }
+      const row = { track: cur, title_he: $("lt").value.trim(), icon: $("li").value.trim() || null, topic: $("ltp").value.trim() || null, sort: +$("ls").value || 0, cards, updated_at: new Date().toISOString() };
+      if (!row.title_he) return alert("اكتب عنوان");
+      const { error } = l.id ? await sb.from("lessons").update(row).eq("id", l.id) : await sb.from("lessons").insert(row);
+      if (error) return alert(error.message);
+      lesEdit = null; lookLessons();
+    };
+    if ($("ldel")) $("ldel").onclick = async () => { if (!confirm("تحذف الدرس؟ ما برجع.")) return; const { error } = await sb.from("lessons").delete().eq("id", l.id); if (error) return alert(error.message); lesEdit = null; lookLessons(); };
+    return;
+  }
+  $("lbody").innerHTML = `<div class="card" style="gap:8px"><div class="row" style="justify-content:space-between"><h3>📖 دروس البطاقات</h3><button class="btn" id="lnew" style="flex:none">➕ درس جديد</button></div>
+    <div class="row" style="justify-content:flex-start"><label style="flex:none">الكورس:</label><select id="lcr" style="flex:none">${courses.map(c => `<option value="${c.id}" ${c.id === cur ? "selected" : ""}>${esc(c.icon || "")} ${esc(c.he)}</option>`).join("")}</select></div>
+    <p class="muted">كل تغيير هون بيوصل فوراً (بدون 💾). «مخفي» = بس إنت (أدمن) بتشوفه بالتطبيق. «ببلاش» = مفتوح لكل الطلاب حتى بدون اشتراك.</p>
+    <div class="tbl"><table><thead><tr><th>#</th><th>الدرس</th><th>بطاقات</th><th>ظاهر؟</th><th>ببلاش؟</th><th></th></tr></thead><tbody>${(rows || []).map(r => `<tr><td>${r.sort}</td><td class="he">${esc(r.icon || "")} ${esc(r.title_he)} <span class="muted" dir="ltr">${esc(r.topic || "")}</span></td><td>${(r.cards || []).length}</td>
+      <td><button class="btn ghost" data-lp="${r.id}" data-v="${r.published ? 0 : 1}" style="flex:none">${r.published ? "🟢 ظاهر" : "⚪ مخفي"}</button></td>
+      <td><button class="btn ghost" data-lf="${r.id}" data-v="${r.is_free ? 0 : 1}" style="flex:none">${r.is_free ? "🎁 ببلاش" : "🔒 اشتراك"}</button></td>
+      <td><button class="btn ghost" data-le="${r.id}" style="flex:none">✏️ عدّل</button></td></tr>`).join("") || `<tr><td colspan="6" class="muted">ما في دروس لهالكورس.</td></tr>`}</tbody></table></div></div>`;
+  $("lcr").onchange = () => { curTrack = $("lcr").value; lookLessons(); };
+  $("lnew").onclick = () => { lesEdit = "new"; lookLessons(); };
+  document.querySelectorAll("[data-le]").forEach(b => b.onclick = () => { lesEdit = +b.dataset.le; lookLessons(); });
+  document.querySelectorAll("[data-lp]").forEach(b => b.onclick = async () => { const { error } = await sb.from("lessons").update({ published: b.dataset.v === "1" }).eq("id", +b.dataset.lp); if (error) alert(error.message); lookLessons(); });
+  document.querySelectorAll("[data-lf]").forEach(b => b.onclick = async () => { const { error } = await sb.from("lessons").update({ is_free: b.dataset.v === "1" }).eq("id", +b.dataset.lf); if (error) alert(error.message); lookLessons(); });
 }
 
 /* texts */
