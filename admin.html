@@ -738,7 +738,7 @@ const LOOK_SECTIONS = { mission: "🎯 مهمة اليوم", progress: "📊 ب�
   stuLeague: "🎓 الطلاب: ליגת הכיתה", stuFinal: "🎓 الطلاب: מבחן מסכם", stuCards: "🎓 الطلاب: כרטיסיות הקורס", stuQuiz: "🎓 الطلاب: שאלון ידע", stuMix: "🎓 الطلاب: תרגול מעורב", stuLessons: "🎓 الطلاب: 📖 שיעורים (بطاقات)", stuFree: "🎓 الطلاب: شريط «שאלות חינם» والاشتراك" };
 const LOOK_COLORS = { accent: "اللون الأساسي (أزرار)", "accent-soft": "لون فاتح للخلفيات الصغيرة", "on-accent": "لون الكتابة فوق الأزرار", bg: "خلفية التطبيق", surface: "خلفية البطاقات", ink: "لون الكتابة", muted: "كتابة باهتة", line: "الخطوط والحدود", amber: "برتقالي (تنبيهات)", ok: "أخضر (صح)", bad: "أحمر (غلط)", g1: "التدرّج فوق — لون 1", g2: "التدرّج فوق — لون 2" };
 const LOOK_ACTS = { "": "بدون", plans: "صفحة الاشتراك", contact: "صفحة تواصل", pastex: "امتحانات سابقة", summaries: "ملخصات", league: "الدوري", exams: "امتحاناتي", stats: "الإحصائيات", whatsapp: "واتساب", instagram: "إنستغرام" };
-let look = null, lookSaved = "", lookSub = "settings", lookText = { q: "" }, lookEditBan = null, appTexts = null, appPhrases = null;
+let look = null, lookSaved = "", lookSub = "numbers", lookText = { q: "" }, lookEditBan = null, appTexts = null, appPhrases = null;
 const lookDirty = () => JSON.stringify(look) !== lookSaved;
 async function viewLook() {
   if (!look) {
@@ -747,13 +747,13 @@ async function viewLook() {
     if (error) { $("body").innerHTML = `<div class="card msg bad">${esc(error.message)}</div>`; return; }
     look = data?.config || {}; lookSaved = JSON.stringify(look); look._meta = { at: data?.updated_at, by: data?.updated_by }; lookSaved = JSON.stringify(look);
   }
-  const SUBS = [["settings","⚙️ إعدادات"],["lessons","⚡ חזרה מהירה (البطاقات)"],["banners","📣 بانرات"],["colors","🎨 ألوان"],["texts","✏️ نصوص"],["sections","👁️ إظهار/إخفاء"],["tracks","🖼️ المسارات"],["contact","📞 تواصل"],["maint","🛠️ صيانة وتحديث"],["css","🧩 CSS"],["history","🕘 السجل"]];
+  const SUBS = [["numbers","📊 الأرقام"],["settings","⚙️ إعدادات"],["lessons","⚡ חזרה מהירה (البطاقات)"],["banners","📣 بانرات"],["colors","🎨 ألوان"],["texts","✏️ نصوص"],["sections","👁️ إظهار/إخفاء"],["tracks","🖼️ المسارات"],["contact","📞 تواصل"],["maint","🛠️ صيانة وتحديث"],["css","🧩 CSS"],["history","🕘 السجل"]];
   $("body").innerHTML = `<div class="card" style="gap:8px"><div class="row" style="justify-content:space-between"><div><b>🎨 التحكم بشكل التطبيق</b><div class="muted">كل تغيير هون بيوصل للتطبيق والموقع بدون تحديث من Apple، أول ما الطالب يفتح التطبيق أو يرجعله.${look._meta?.at ? ` آخر حفظ: ${esc(fmtDT(look._meta.at))}` : ""}</div></div>
     <button class="btn" id="lsave" ${lookDirty() ? "" : "disabled"}>💾 احفظ وانشر</button></div>${lookDirty() ? `<div class="pill off" style="align-self:flex-start">في تغييرات مش محفوظة</div>` : ""}</div>
     <div class="subtabs">${SUBS.map(([k,n]) => `<button data-ls="${k}" class="${lookSub===k?"on":""}">${n}</button>`).join("")}</div><div id="lbody"></div>`;
   document.querySelectorAll("[data-ls]").forEach(b => b.onclick = () => { lookSub = b.dataset.ls; lookEditBan = null; viewLook(); });
   $("lsave").onclick = lookSave;
-  ({ settings: lookSettings, lessons: lookLessons, banners: lookBanners, colors: lookColors, texts: lookTexts, sections: lookSections, tracks: lookTracks, contact: lookContact, maint: lookMaint, css: lookCss, history: lookHistory })[lookSub]();
+  ({ numbers: lookNumbers, settings: lookSettings, lessons: lookLessons, banners: lookBanners, colors: lookColors, texts: lookTexts, sections: lookSections, tracks: lookTracks, contact: lookContact, maint: lookMaint, css: lookCss, history: lookHistory })[lookSub]();
 }
 function lookTouch() { const b = $("lsave"); if (b) b.disabled = !lookDirty(); }
 async function lookSave() {
@@ -915,6 +915,28 @@ async function lookSettings() {
   for (const [id, k] of [["nti", "title"], ["nt0", "t0"], ["nt1", "t1"], ["ntn", "tn"]]) $(id).oninput = () => { const v = $(id).value; if (v.trim()) N[k] = v; else delete N[k]; lookTouch(); };
   const { data: ns } = await sb.from("nudge_sent").select("sent_at,ok").order("sent_at", { ascending: false }).limit(200);
   if ($("nst")) $("nst").textContent = ns?.length ? `آخر 7 أيام: انبعت ${(ns || []).filter(x => x.ok && Date.now() - Date.parse(x.sent_at) < 7 * 864e5).length} تذكير.` : "لسا ما انبعت ولا تذكير.";
+}
+
+/* numbers: where new people stop, and app errors (read only) */
+let numDays = 7;
+async function lookNumbers() {
+  $("lbody").innerHTML = `<div class="card muted">بحمّل…</div>`;
+  const [{ data: f, error: fe }, { data: ls }, { data: er }] = await Promise.all([
+    sb.rpc("admin_funnel", { p_days: numDays }), sb.rpc("admin_last_screens", { p_days: numDays }),
+    sb.from("app_errors").select("msg,screen,build,platform,at").gte("at", new Date(Date.now() - numDays * 864e5).toISOString()).order("at", { ascending: false }).limit(300)]);
+  if (fe) { $("lbody").innerHTML = `<div class="card msg bad">${esc(fe.message)}</div>`; return; }
+  const top = (f || [])[0]?.n || 0;
+  const SCN = { welcome: "أول شاشة", student_setup: "تفاصيل الطالب", grad_tracks: "اختيار المهنة", signup: "التسجيل", login: "الدخول", ask_name: "سؤال الاسم", home: "الرئيسية", student_home: "رئيسية الطالب", course_home: "صفحة الكورس", choose_track: "اختيار المسار", opt_chooser: "عيوني/מעשי", intro: "شاشات التعريف", plans: "صفحة الأسعار", plans_view: "صفحة الأسعار", buy_start: "كبس شراء", question: "سؤال", exam: "امتحان", result: "نتيجة", tools: "עוד", account: "الحساب", stats: "إحصائيات", my_exams: "امتحاناتي", my_questions: "أسئلتي", league: "الليغا", cards: "כרטיסיות", lessons: "חזרה מהירה", lesson: "درس", blocked: "جهاز مسكّر" };
+  const groups = {}; (er || []).forEach(e => { const k = e.msg.slice(0, 120); (groups[k] = groups[k] || { n: 0, last: e }).n++; });
+  $("lbody").innerHTML = `<div class="card" style="gap:10px"><div class="row" style="justify-content:space-between"><h3>📊 وين الناس الجداد بيوقفوا</h3>
+      <select id="nd" style="flex:none">${[7, 14, 30].map(d => `<option value="${d}" ${d === numDays ? "selected" : ""}>آخر ${d} يوم</option>`).join("")}</select></div>
+    <p class="muted">بس اللي سجّلوا بهالفترة (بدونك). الخطوات من 5 لـ6 بتتسجّل من النسخة الجديدة وطالع.</p>
+    ${(f || []).map(r => { const pct = top ? Math.round(r.n / top * 100) : 0; return `<div><div class="row" style="justify-content:space-between"><span class="he">${esc(r.step.replace(/^\d /, ""))}</span><b>${r.n} <span class="muted">(${pct}%)</span></b></div><div style="height:10px;border-radius:6px;background:var(--line);overflow:hidden"><i style="display:block;height:100%;width:${pct}%;background:var(--brand)"></i></div></div>`; }).join("")}</div>
+  <div class="card" style="gap:8px"><h3>🚪 آخر شاشة قبل ما يطلعوا</h3><p class="muted">ناس سجّلوا وحلّوا أقل من 5 أسئلة – آخر شاشة شافوها.</p>
+    ${(ls || []).length ? `<div class="tbl"><table><tbody>${ls.map(r => `<tr><td>${esc(SCN[r.screen] || r.screen)}</td><td><b>${r.n}</b></td></tr>`).join("")}</tbody></table></div>` : `<p class="muted">لسا ما في معلومات (بتبلش تتجمّع من النسخة الجديدة).</p>`}</div>
+  <div class="card" style="gap:8px"><h3>🐞 أخطاء بالتطبيق</h3>
+    ${Object.keys(groups).length ? `<div class="tbl"><table><thead><tr><th>الخطأ</th><th>كم مرة</th><th>آخر مرة</th></tr></thead><tbody>${Object.entries(groups).sort((a, b) => b[1].n - a[1].n).slice(0, 30).map(([m, g]) => `<tr><td dir="ltr" style="text-align:left;font-size:12px">${esc(m)}<div class="muted">${esc(SCN[g.last.screen] || g.last.screen || "")} · ${esc(g.last.platform || "")} ${esc(g.last.build || "")}</div></td><td><b>${g.n}</b></td><td class="muted">${new Date(g.last.at).toLocaleString("he-IL")}</td></tr>`).join("")}</tbody></table></div>` : `<p class="muted">✅ ما في أخطاء بهالفترة.</p>`}</div>`;
+  $("nd").onchange = () => { numDays = +$("nd").value; lookNumbers(); };
 }
 
 /* card lessons for students: saved straight to the lessons table (no 💾 needed) */
