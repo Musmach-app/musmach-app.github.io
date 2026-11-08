@@ -313,9 +313,9 @@ Object.assign(T.he, {
   askedFor: "ביקשת", onlyAvail: "זמינות רק", matchQs: "שאלות מתאימות לבחירה", maxPer: "עד",
   summaryT: "סיכום המבחן", timerPolicy: "הטיימר ממשיך לרוץ גם אם סוגרים את האפליקציה, כמו במבחן אמיתי.", change: "שינוי",
   gMorning: "בוקר טוב", gNoon: "צהריים טובים", gEvening: "ערב טוב", gNight: "לילה טוב",
-  needAcct: "כדי לרכוש מנוי, צור קודם חשבון עם מייל כדי שהמנוי יישמר.", pastEmpty: "מבחנים משוחזרים למסלול הזה יתווספו בקרוב. נוסיף אותם ברגע שיהיו מוכנים.",
+  needAcct: "כדי לרכוש מנוי, צור קודם חשבון עם מייל כדי שהמנוי יישמר.", pastEmpty: "מבחנים משנים קודמות למסלול הזה יתווספו בקרוב. נוסיף אותם ברגע שיהיו מוכנים.",
   toolsAcct: "החשבון שלי", toolsStudy: "כלי למידה", toolsRemind: "תזכורות והתראות", toolsHelp: "עזרה ומידע", toolsData: "הנתונים שלי",
-  pastEx: "מבחנים משוחזרים", pastExD: "מועדים קודמים, מבחן אחד בכל פעם", pastExNote: "שאלות שנכתבו בנוסח מבחנים ממשלתיים קודמים (לא המבחן הרשמי); התשובות מבוססות על ספרות הסילבוס של משרד הבריאות.",
+  pastEx: "מבחנים משנים קודמות", pastExD: "מועדים קודמים, מבחן אחד בכל פעם", pastExNote: "שאלות שנכתבו בנוסח מבחנים ממשלתיים קודמים (לא המבחן הרשמי); התשובות מבוססות על ספרות הסילבוס של משרד הבריאות.",
   startExam: "התחלת מבחן חדש", startExamD: "בוחרים נושאים, מספר שאלות וזמן", quick: "גישה מהירה",
   in1T: "ברוכים הבאים למוסמך", in1D: "מתכוננים למבחן הרישוי בסיעוד, עם הסבר לכל תשובה.",
   in2T: "מתחילים מבחן", in2D: "לוחצים על „התחלת מבחן חדש”, בוחרים נושאים ומספר שאלות, עם זמן או בלי.",
@@ -366,7 +366,7 @@ Object.assign(T.he, { smrT: "סיכומים", smrD: "מחלה, סימנים עי
 Object.assign(T.en, { smrPlans: "See plans" });
 Object.assign(T.he, { smrPlans: "לצפייה במסלולים" });
 Object.assign(T.en, { pastLocked: "Locked", pastEmpty: "Reconstructed exams for this track will open when they are ready." });
-Object.assign(T.he, { pastLocked: "נעול", pastEmpty: "המבחנים המשוחזרים למסלול הזה ייפתחו כשיהיו מוכנים." });
+Object.assign(T.he, { pastLocked: "נעול", pastEmpty: "המבחנים משנים קודמות למסלול הזה ייפתחו כשיהיו מוכנים." });
 Object.assign(T.en, { waT: "Message us on WhatsApp" });
 Object.assign(T.he, { waT: "כתבו לנו בווצאפ" });
 Object.assign(T.en, { optTitle: "Optometry", optTheory: "Theory exam", optPractical: "Practical exam", optPracticalD: "The practical exam content is being prepared and will open soon." });
