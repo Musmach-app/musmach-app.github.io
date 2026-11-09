@@ -604,7 +604,7 @@ let userState = { q: "", page: 0, sub: "list", f: "all", sort: "new" };
 const fmtDT = d => d ? new Date(d).toLocaleString("en-GB", { timeZone: "Asia/Jerusalem", day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "—";
 async function viewUsers() {
   const s = userState, PAGE = 50;
-  const SUBS = [["list","📋 قائمة المستخدمين"],["grant","🔓 فتح مسارات لحساب"],["editors","🛡️ ادمن محدود"]];
+  const SUBS = [["list","📋 قائمة المستخدمين"],["grant","🔓 فتح مسارات لحساب"],["packs","📚 كورسات طلاب (Bit)"],["editors","🛡️ ادمن محدود"]];
   const sv = SUBS.some(x => x[0] === s.sub) ? s.sub : "list";
   $("body").innerHTML = `<div class="subtabs">${SUBS.map(([k,n]) => `<button data-sub="${k}" class="${sv===k?"on":""}">${n}</button>`).join("")}</div>` +
     (sv === "editors" ? `<div class="card"><h3>إضافة ادمن بصلاحيات محدودة</h3>
@@ -619,7 +619,13 @@ async function viewUsers() {
     <div class="row" style="justify-content:flex-start;align-items:center"><span class="muted" style="flex:none">لحد:</span><input id="guntil" type="date" dir="ltr" style="flex:none;width:auto"><span class="muted" style="flex:none">(فاضي = بدون نهاية)</span></div>
     <button class="btn" id="ggo" style="align-self:flex-start">فتح المسارات</button>
     <div id="gmsg" class="muted"></div>
-    <div id="gl" class="muted">بحمّل…</div></div>` : `<div id="ufun"></div><div class="card"><div id="ufil" class="subtabs" style="margin:0"></div><div class="row"><input id="uq" dir="ltr" placeholder="ابحث بالإيميل…" value="${esc(s.q)}"><select id="usort" style="flex:none;width:auto"><option value="new">الأحدث تسجيلاً</option><option value="seen">آخر دخول</option><option value="most">الأكثر حلاً</option></select></div>
+    <div id="gl" class="muted">بحمّل…</div></div>` : sv === "packs" ? `<div class="card"><h3>📚 كورسات للطلاب (بعد دفع Bit)</h3>
+    <p class="muted">بتحط إيميل الطالب وبتختار كم كورس دفع. الطالب بيختار الكورسات بنفسه بالتطبيق. الحزمة مفتوحة 5 شهور. الأسعار: كورس ₪69 · كورسين ₪99 · 3 كورسات ₪139 · كل الكورسات ₪199.</p>
+    <input id="pem" type="email" dir="ltr" placeholder="إيميل الطالب">
+    <div class="row" style="justify-content:flex-start;gap:6px;flex-wrap:wrap">${[[1,"كورس واحد · ₪69"],[2,"كورسين · ₪99"],[3,"3 كورسات · ₪139"],[4,"كل الكورسات · ₪199"]].map(([n,l]) => `<label class="pill" style="cursor:pointer"><input type="radio" name="psz" value="${n}" ${n===2?"checked":""}> ${l}</label>`).join("")}</div>
+    <button class="btn" id="pgo" style="align-self:flex-start">فتح الحزمة</button>
+    <div id="pmsg" class="muted"></div>
+    <div id="pl" class="muted">بحمّل…</div></div>` : `<div id="ufun"></div><div class="card"><div id="ufil" class="subtabs" style="margin:0"></div><div class="row"><input id="uq" dir="ltr" placeholder="ابحث بالإيميل…" value="${esc(s.q)}"><select id="usort" style="flex:none;width:auto"><option value="new">الأحدث تسجيلاً</option><option value="seen">آخر دخول</option><option value="most">الأكثر حلاً</option></select></div>
     <div class="muted" id="ucount">بحمّل…</div>
     <div class="tbl"><table><thead><tr><th>المستخدم</th><th>الحالة</th><th>النشاط</th><th>سجّل</th><th></th></tr></thead><tbody id="rows"><tr><td colspan="5" class="muted">بحمّل…</td></tr></tbody></table></div></div>`);
   document.querySelectorAll("[data-sub]").forEach(x => x.onclick = () => { s.sub = x.dataset.sub; viewUsers(); });
@@ -638,6 +644,26 @@ async function viewUsers() {
     const { error } = await sb.rpc("admin_set_editor", { p_email: em, p_tracks: tr });
     if (error) { alert(error.message.includes("no account") ? "ما في حساب بهاد الإيميل. لازم يسجّل بالتطبيق أولاً." : error.message); return; }
     $("ed").value = ""; document.querySelectorAll(".edt").forEach(x => x.checked = false); updE(); loadEditors();
+  };
+    return;
+  }
+  if (sv === "packs") {
+  const loadPacks = async () => {
+    const { data, error } = await sb.rpc("admin_list_packs");
+    if (error) { $("pl").textContent = error.message; return; }
+    const live = (d) => new Date(d) > new Date();
+    $("pl").innerHTML = (data || []).length ? `<div class="tbl"><table><thead><tr><th>الطالب</th><th>الحزمة</th><th>الكورسات اللي اختارها</th><th>لحد</th><th></th></tr></thead><tbody>${data.map(k => `<tr><td dir="ltr">${esc(k.email)}</td><td>${k.size >= 4 ? "كل الكورسات" : k.size + " كورس"} ${k.sandbox ? "🧪" : k.source === "admin" ? "· Bit" : "· أبل"}</td><td>${k.size >= 4 ? "الكل" : esc(k.courses || "—") + ` (${k.used}/${k.size})`}</td><td>${live(k.until) ? new Date(k.until).toLocaleDateString("he-IL") : "<span class='muted'>انتهت</span>"}</td><td>${live(k.until) ? `<a href="#" data-end="${k.id}">تسكير</a>` : ""}</td></tr>`).join("")}</tbody></table></div>` : "لسا ما في حزم.";
+    $("pl").querySelectorAll("[data-end]").forEach(a => a.onclick = async e => { e.preventDefault(); if (!confirm("تسكّر هاي الحزمة والكورسات اللي فيها؟")) return; const { error: x } = await sb.rpc("admin_end_pack", { p_id: +a.dataset.end }); if (x) alert(x.message); loadPacks(); });
+  };
+  loadPacks();
+  $("pgo").onclick = async () => {
+    const em = $("pem").value.trim(), n = +(document.querySelector("input[name=psz]:checked")?.value || 0);
+    if (!em || !n) return;
+    if (!confirm(`تفتح ${n >= 4 ? "كل الكورسات" : n + " كورس"} لـ ${em} لمدة 5 شهور؟`)) return;
+    const { error } = await sb.rpc("admin_grant_pack_email", { p_email: em, p_size: n });
+    if (error) { $("pmsg").textContent = error.message.includes("no account") ? "ما في حساب بهاد الإيميل. لازم يسجّل بالتطبيق أولاً." : error.message; return; }
+    $("pmsg").textContent = `✓ انفتحت الحزمة لـ ${em}. الطالب بيختار الكورسات بالتطبيق.`;
+    $("pem").value = ""; loadPacks();
   };
     return;
   }
