@@ -620,9 +620,9 @@ async function viewUsers() {
     <button class="btn" id="ggo" style="align-self:flex-start">فتح المسارات</button>
     <div id="gmsg" class="muted"></div>
     <div id="gl" class="muted">بحمّل…</div></div>` : sv === "packs" ? `<div class="card"><h3>📚 كورسات للطلاب (بعد دفع Bit)</h3>
-    <p class="muted">بتحط إيميل الطالب وبتختار كم كورس دفع. الطالب بيختار الكورسات بنفسه بالتطبيق. الحزمة مفتوحة 5 شهور. الأسعار: كورس ₪69 · كورسين ₪99 · 3 كورسات ₪139 · كل الكورسات ₪199.</p>
+    <p class="muted">بتحط إيميل الطالب وبتختار كم كورس دفع. الطالب بيختار الكورسات بنفسه بالتطبيق. الحزمة مفتوحة 5 شهور. الأسعار: كورس ₪69 · كورسين ₪99 · 3 كورسات ₪139 · 4 كورسات ₪199 · كل الكورسات ₪399.</p>
     <input id="pem" type="email" dir="ltr" placeholder="إيميل الطالب">
-    <div class="row" style="justify-content:flex-start;gap:6px;flex-wrap:wrap">${[[1,"كورس واحد · ₪69"],[2,"كورسين · ₪99"],[3,"3 كورسات · ₪139"],[4,"كل الكورسات · ₪199"]].map(([n,l]) => `<label class="pill" style="cursor:pointer"><input type="radio" name="psz" value="${n}" ${n===2?"checked":""}> ${l}</label>`).join("")}</div>
+    <div class="row" style="justify-content:flex-start;gap:6px;flex-wrap:wrap">${[[1,"كورس واحد · ₪69"],[2,"كورسين · ₪99"],[3,"3 كورسات · ₪139"],[4,"4 كورسات · ₪199"],[9,"كل الكورسات · ₪399"]].map(([n,l]) => `<label class="pill" style="cursor:pointer"><input type="radio" name="psz" value="${n}" ${n===2?"checked":""}> ${l}</label>`).join("")}</div>
     <button class="btn" id="pgo" style="align-self:flex-start">فتح الحزمة</button>
     <div id="pmsg" class="muted"></div>
     <div id="pl" class="muted">بحمّل…</div></div>` : `<div id="ufun"></div><div class="card"><div id="ufil" class="subtabs" style="margin:0"></div><div class="row"><input id="uq" dir="ltr" placeholder="ابحث بالإيميل…" value="${esc(s.q)}"><select id="usort" style="flex:none;width:auto"><option value="new">الأحدث تسجيلاً</option><option value="seen">آخر دخول</option><option value="most">الأكثر حلاً</option></select></div>
@@ -652,14 +652,14 @@ async function viewUsers() {
     const { data, error } = await sb.rpc("admin_list_packs");
     if (error) { $("pl").textContent = error.message; return; }
     const live = (d) => new Date(d) > new Date();
-    $("pl").innerHTML = (data || []).length ? `<div class="tbl"><table><thead><tr><th>الطالب</th><th>الحزمة</th><th>الكورسات اللي اختارها</th><th>لحد</th><th></th></tr></thead><tbody>${data.map(k => `<tr><td dir="ltr">${esc(k.email)}</td><td>${k.size >= 4 ? "كل الكورسات" : k.size + " كورس"} ${k.sandbox ? "🧪" : k.source === "admin" ? "· Bit" : "· أبل"}</td><td>${k.size >= 4 ? "الكل" : esc(k.courses || "—") + ` (${k.used}/${k.size})`}</td><td>${live(k.until) ? new Date(k.until).toLocaleDateString("he-IL") : "<span class='muted'>انتهت</span>"}</td><td>${live(k.until) ? `<a href="#" data-end="${k.id}">تسكير</a>` : ""}</td></tr>`).join("")}</tbody></table></div>` : "لسا ما في حزم.";
+    $("pl").innerHTML = (data || []).length ? `<div class="tbl"><table><thead><tr><th>الطالب</th><th>الحزمة</th><th>الكورسات اللي اختارها</th><th>لحد</th><th></th></tr></thead><tbody>${data.map(k => `<tr><td dir="ltr">${esc(k.email)}</td><td>${k.size >= 9 ? "كل الكورسات" : k.size + " كورس"} ${k.sandbox ? "🧪" : k.source === "admin" ? "· Bit" : "· أبل"}</td><td>${k.size >= 9 ? "الكل" : esc(k.courses || "—") + ` (${k.used}/${k.size})`}</td><td>${live(k.until) ? new Date(k.until).toLocaleDateString("he-IL") : "<span class='muted'>انتهت</span>"}</td><td>${live(k.until) ? `<a href="#" data-end="${k.id}">تسكير</a>` : ""}</td></tr>`).join("")}</tbody></table></div>` : "لسا ما في حزم.";
     $("pl").querySelectorAll("[data-end]").forEach(a => a.onclick = async e => { e.preventDefault(); if (!confirm("تسكّر هاي الحزمة والكورسات اللي فيها؟")) return; const { error: x } = await sb.rpc("admin_end_pack", { p_id: +a.dataset.end }); if (x) alert(x.message); loadPacks(); });
   };
   loadPacks();
   $("pgo").onclick = async () => {
     const em = $("pem").value.trim(), n = +(document.querySelector("input[name=psz]:checked")?.value || 0);
     if (!em || !n) return;
-    if (!confirm(`تفتح ${n >= 4 ? "كل الكورسات" : n + " كورس"} لـ ${em} لمدة 5 شهور؟`)) return;
+    if (!confirm(`تفتح ${n >= 9 ? "كل الكورسات" : n + " كورس"} لـ ${em} لمدة 5 شهور؟`)) return;
     const { error } = await sb.rpc("admin_grant_pack_email", { p_email: em, p_size: n });
     if (error) { $("pmsg").textContent = error.message.includes("no account") ? "ما في حساب بهاد الإيميل. لازم يسجّل بالتطبيق أولاً." : error.message; return; }
     $("pmsg").textContent = `✓ انفتحت الحزمة لـ ${em}. الطالب بيختار الكورسات بالتطبيق.`;
