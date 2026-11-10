@@ -619,7 +619,10 @@ async function viewUsers() {
     <div class="row" style="justify-content:flex-start;align-items:center"><span class="muted" style="flex:none">لحد:</span><input id="guntil" type="date" dir="ltr" style="flex:none;width:auto"><span class="muted" style="flex:none">(فاضي = بدون نهاية)</span></div>
     <button class="btn" id="ggo" style="align-self:flex-start">فتح المسارات</button>
     <div id="gmsg" class="muted"></div>
-    <div id="gl" class="muted">بحمّل…</div></div>` : `<div id="ufun"></div><div class="card"><div id="ufil" class="subtabs" style="margin:0"></div><div class="row"><input id="uq" dir="ltr" placeholder="ابحث بالإيميل…" value="${esc(s.q)}"><select id="usort" style="flex:none;width:auto"><option value="new">الأحدث تسجيلاً</option><option value="seen">آخر دخول</option><option value="most">الأكثر حلاً</option></select></div>
+    <div id="gl" class="muted">بحمّل…</div></div>
+    <div class="card"><h3 style="margin:0 0 6px">📸 سماح بالتصوير</h3><p class="muted" style="margin:0 0 10px">التصوير ممنوع للكل. هون بتسمح لحساب معيّن يصوّر الشاشة بالتطبيق (العلامة المائية بتضل).</p>
+    <div class="row"><input id="cem" dir="ltr" placeholder="الإيميل"><button class="btn" id="cgo" style="flex:none">اسمح</button></div>
+    <div id="cmsg" class="muted"></div><div id="cl" class="muted">بحمّل…</div></div>` : `<div id="ufun"></div><div class="card"><div id="ufil" class="subtabs" style="margin:0"></div><div class="row"><input id="uq" dir="ltr" placeholder="ابحث بالإيميل…" value="${esc(s.q)}"><select id="usort" style="flex:none;width:auto"><option value="new">الأحدث تسجيلاً</option><option value="seen">آخر دخول</option><option value="most">الأكثر حلاً</option></select></div>
     <div class="muted" id="ucount">بحمّل…</div>
     <div class="tbl"><table><thead><tr><th>المستخدم</th><th>الحالة</th><th>النشاط</th><th>سجّل</th><th></th></tr></thead><tbody id="rows"><tr><td colspan="5" class="muted">بحمّل…</td></tr></tbody></table></div></div>`);
   document.querySelectorAll("[data-sub]").forEach(x => x.onclick = () => { s.sub = x.dataset.sub; viewUsers(); });
@@ -650,6 +653,19 @@ async function viewUsers() {
     $("gl").querySelectorAll("[data-rv]").forEach(a => a.onclick = async e => { e.preventDefault(); if (!confirm("تسكّر هذا المسار عن الحساب؟")) return; const { error: x } = await sb.rpc("admin_revoke_track", { p_user: a.dataset.rv, p_track: a.dataset.tr }); if (x) alert(x.message); loadGrants(); });
   };
   loadGrants();
+  const loadCap = async () => {
+    const { data, error } = await sb.rpc("admin_list_capture");
+    if (error) { $("cl").textContent = error.message; return; }
+    $("cl").innerHTML = data?.length ? data.map(r => `<div class="row" style="align-items:center"><span dir="ltr">${esc(r.email)}</span><a href="#" data-cx="${esc(r.email)}" style="flex:none">إلغاء</a></div>`).join("") : "ما في حدا مسموحله.";
+    $("cl").querySelectorAll("[data-cx]").forEach(a => a.onclick = async e => { e.preventDefault(); if (!confirm("تلغي السماح بالتصوير لهاد الحساب؟")) return; const { error: x } = await sb.rpc("admin_set_capture", { p_email: a.dataset.cx, p_on: false }); if (x) alert(x.message); loadCap(); });
+  };
+  loadCap();
+  $("cgo").onclick = async () => {
+    const em = $("cem").value.trim(); if (!em) return;
+    const { error } = await sb.rpc("admin_set_capture", { p_email: em, p_on: true });
+    $("cmsg").textContent = error ? (error.message.includes("no account") ? "ما في حساب بهاد الإيميل." : error.message) : `✓ ${em} صار يقدر يصوّر (بعد ما يفتح التطبيق من جديد)`;
+    if (!error) { $("cem").value = ""; loadCap(); }
+  };
   const updG = wirePicker("gtr");
   $("ggo").onclick = async () => {
     const em = $("gem").value.trim(), tr = [...document.querySelectorAll(".gtr:checked")].map(x => x.value);
@@ -782,7 +798,7 @@ function bindUploads(after) {
 function lookBanners() {
   const L = look.banners || (look.banners = []);
   if (lookEditBan != null) return lookBanEdit();
-  const placeN = { home: "الرئيسية", all: "كل الصفحات", plans: "صفحة الاشتراك" };
+  const placeN = { home: "الرئيسية", all: "كل الصفحات", plans: "صفحة الاشتراك", popup: "🪟 نافذة بنص الشاشة" };
   $("lbody").innerHTML = `<div class="card"><div class="row" style="justify-content:space-between"><h3>📣 البانرات</h3><button class="btn" id="bnew">➕ بانر جديد</button></div>
     <p class="muted">بطاقات بتطلع بالتطبيق (بالرئيسية أو بكل الصفحات أو بصفحة الاشتراك) — فيها صورة، عنوان، نص، وزر بيفتح رابط أو صفحة بالتطبيق. ممكن تحدد لأي مسار ولأي تواريخ.</p>
     ${L.length ? L.map((b, i) => `<div class="row" style="justify-content:space-between;border-top:1px solid var(--line);padding-top:8px">
@@ -790,7 +806,7 @@ function lookBanners() {
       <span class="muted">${({ web: "🌐 الموقع", app: "📱 الآيفون", all: "📱🌐" })[b.platform || "all"]} · ${placeN[b.place || "home"]} · ${b.tracks?.length ? b.tracks.map(trackLabel).join("، ") : "كل المسارات"}${b.until ? " · لحد " + esc(b.until) : ""}</span></span>
       <span class="row"><span class="pill ${b.active === false ? "off" : ""}">${b.active === false ? "موقوف" : "ظاهر"}</span>
       <button class="btn ghost" data-bup="${i}" ${i ? "" : "disabled"}>⬆️</button><button class="btn ghost" data-bed="${i}">✏️ عدّل</button><button class="btn danger" data-bdel="${i}">🗑</button></span></div>`).join("") : `<p class="muted">ما في بانرات.</p>`}</div>`;
-  $("bnew").onclick = () => { L.push({ id: Date.now().toString(36), active: true, place: "home", platform: "web", tracks: [], he: { title: "" }, en: {} }); lookEditBan = L.length - 1; viewLook(); };
+  $("bnew").onclick = () => { L.push({ id: Date.now().toString(36), active: true, place: "popup", platform: "all", tracks: [], he: { title: "" }, en: {} }); lookEditBan = L.length - 1; viewLook(); };
   document.querySelectorAll("[data-bed]").forEach(b => b.onclick = () => { lookEditBan = +b.dataset.bed; viewLook(); });
   document.querySelectorAll("[data-bup]").forEach(b => b.onclick = () => { const i = +b.dataset.bup; [L[i - 1], L[i]] = [L[i], L[i - 1]]; viewLook(); });
   document.querySelectorAll("[data-bdel]").forEach(b => b.onclick = () => { if (!confirm("تحذف البانر؟ (بينحذف من التطبيق بعد ما تحفظ)")) return; L.splice(+b.dataset.bdel, 1); viewLook(); });
@@ -806,7 +822,7 @@ function lookBanEdit() {
     <div class="row"><div style="flex:1"><label>لما يكبس عليه يفتح</label><select id="b_act">${Object.entries(LOOK_ACTS).map(([k, n]) => `<option value="${k}" ${(b.action || "") === k && !b.url ? "selected" : ""}>${n}</option>`).join("")}<option value="url" ${b.url ? "selected" : ""}>رابط خارجي…</option></select></div>
       <div style="flex:1"><label>الرابط (إذا اخترت رابط خارجي)</label><input id="b_url" dir="ltr" placeholder="https://…" value="${esc(b.url || "")}"></div></div>
     <div class="row"><div style="flex:1"><label>نص الزر (עברית) — فاضي = البطاقة كلها بتنكبس</label><input id="b_hbtn" dir="rtl" value="${esc(b.he.btn || "")}"></div><div style="flex:1"><label>Button (English)</label><input id="b_ebtn" dir="ltr" value="${esc(b.en.btn || "")}"></div></div>
-    <div class="row"><div><label>وين يطلع</label><select id="b_place"><option value="home">الرئيسية</option><option value="all">فوق كل الصفحات</option><option value="plans">صفحة الاشتراك</option></select></div>
+    <div class="row"><div><label>وين يطلع</label><select id="b_place"><option value="home">الرئيسية</option><option value="all">فوق كل الصفحات</option><option value="plans">صفحة الاشتراك</option><option value="popup">🪟 نافذة بنص الشاشة (مرة وحدة لكل مستخدم)</option></select></div>
       <div><label>بأي مكان</label><select id="b_plat"><option value="web">🌐 الموقع بس</option><option value="all">📱🌐 الآيفون والموقع</option><option value="app">📱 الآيفون بس</option></select></div>
       <div><label>لون الخلفية (فاضي = أبيض عادي)</label><div class="row"><input type="color" id="b_colp" value="${esc(b.color || "#1554A8")}" style="width:52px;padding:2px"><input id="b_col" dir="ltr" value="${esc(b.color || "")}" placeholder="#1554A8" style="width:110px"></div></div>
       <div><label>من تاريخ</label><input type="date" id="b_from" value="${esc(b.from || "")}"></div><div><label>لحد تاريخ</label><input type="date" id="b_until" value="${esc(b.until || "")}"></div></div>
