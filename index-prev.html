@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head><meta name="robots" content="noindex,nofollow"><script>if(location.protocol==="http:"&&/musmach\.co\.il$/.test(location.hostname))location.replace("https:"+location.href.slice(5))</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>/* links from sign-up / password emails that land here go on to the app */(function(){var h=location.hash,q=location.search;if(/access_token|error_description|type=(signup|recovery)/.test(h+q)||/[?&]code=/.test(q))location.replace("app/"+q+h);})();</script>
+<title>מוסמך – תרגול לבחינות הרישוי במקצועות הבריאות</title>
+<meta name="description" content="מוסמך: שאלות תרגול לבחינות הרישוי במקצועות הבריאות, עם הסבר לכל תשובה, מבחני תרגול, משימה יומית ותוכנית לימוד אישית. בעברית ובאנגלית.">
+<meta property="og:title" content="מוסמך – תרגול לבחינות הרישוי במקצועות הבריאות">
+<meta property="og:description" content="שאלות עם הסבר לכל תשובה, מבחני תרגול, משימה יומית ותוכנית לימוד אישית.">
+<meta property="og:image" content="https://musmach-app.github.io/assets/app_home_nursing.jpg">
+<link rel="icon" href="app/icon.png">
+<link rel="apple-touch-icon" href="app/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F5F7FA;--ink:#0A1630;--mute:#5A6781;--ghost:#B4BED0;--line:#DCE2EC;--blue:#1554A8;--deep:#07163A}
+*{box-sizing:border-box}html{scroll-behavior:smooth;color-scheme:light}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Rubik,system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:clip}
+a{color:var(--blue)}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+header.top{display:flex;align-items:center;justify-content:space-between;padding:22px 0}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
+.brand img{width:38px;height:38px;border-radius:11px}.brand b{font-size:21px}
+.top nav{display:flex;align-items:center;gap:26px;font-size:15px}
+.top nav a{text-decoration:none;color:var(--mute)}.top nav a:hover{color:var(--ink)}
+.top nav .go{background:var(--ink);color:#fff;padding:10px 20px;border-radius:999px;font-weight:600}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:56px;padding:0 30px;border-radius:999px;font:600 17px Rubik,sans-serif;text-decoration:none;transition:transform .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn.main{background:var(--blue);color:#fff;box-shadow:0 14px 32px rgba(21,84,168,.32)}
+.btn.line{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+.btn small{font-weight:400;opacity:.7;font-size:13px}
+/* hero */
+.hero{padding:40px 0 0}
+h1{font-size:clamp(46px,9.4vw,132px);line-height:.96;letter-spacing:-.045em;font-weight:700;margin:0}
+h1 span{display:block;color:var(--ghost)}
+.hero-row{display:flex;flex-wrap:wrap;gap:20px 48px;align-items:flex-end;justify-content:space-between;margin:34px 0 44px}
+.lead{font-size:clamp(17px,1.7vw,21px);color:var(--mute);max-width:30em;margin:0}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.wall{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.tk{position:relative;aspect-ratio:4/5;border-radius:34px;overflow:hidden;display:flex;align-items:flex-end;padding:20px 22px;color:#fff;background:radial-gradient(120% 80% at 80% 0%,color-mix(in srgb,var(--c) 70%,#fff),transparent 60%),linear-gradient(165deg,var(--c),color-mix(in srgb,var(--c) 55%,#000));animation:up .8s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--d)}
+.tk:nth-child(n+5){margin-top:0}
+.tkl{position:absolute;inset:0;z-index:2;border-radius:inherit}.tkl:focus-visible{outline:3px solid #fff;outline-offset:-6px}.tk:has(.tkl){cursor:pointer}.tk .soon{position:absolute;top:14px;left:14px;z-index:2;background:rgba(255,255,255,.9);color:#0a1630;font-size:13px;font-weight:600;border-radius:999px;padding:5px 12px}.tk:has(.soon) img{opacity:.55}
+.tk img{position:absolute;inset:6% 4% 14% 4%;width:92%;height:80%;object-fit:contain;object-position:center bottom;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.tk:hover img{transform:scale(1.07) translateY(-6px)}
+.tk b{position:relative;font-size:clamp(17px,1.9vw,26px);letter-spacing:-.02em;text-shadow:0 2px 14px rgba(0,0,0,.35)}
+@keyframes up{from{opacity:0;transform:translateY(60px) rotate(2deg)}}
+.more{margin:22px 0 0;color:var(--mute);font-size:16px}
+/* bands */
+section{padding:120px 0}
+h2{font-size:clamp(34px,5.6vw,78px);line-height:1;letter-spacing:-.035em;margin:0 0 26px;font-weight:700}
+h2 span{color:var(--ghost);display:block}
+.explain{display:grid;gap:56px;align-items:center}
+.phone{width:min(300px,76vw);justify-self:center;border-radius:42px;border:11px solid var(--ink);overflow:hidden;box-shadow:0 40px 80px rgba(10,22,48,.28);background:#fff}
+.phone img{display:block;width:100%;height:auto}
+.parts{list-style:none;margin:30px 0 0;padding:0;border-top:1.5px solid var(--ink)}
+.parts li{display:flex;gap:20px;justify-content:space-between;padding:18px 0;border-bottom:1px solid var(--line);font-size:19px}
+.parts li span{color:var(--mute);font-size:16px;text-align:start;max-width:20em}
+/* timeline: the content really is a sequence */
+.tl{background:var(--deep);color:#fff;border-radius:44px;padding:clamp(36px,6vw,88px);margin:0}
+.tl h2 span{color:rgba(255,255,255,.4);display:block}
+.tl p{color:rgba(255,255,255,.7);max-width:32em;font-size:19px;margin:0 0 56px}
+.days{list-style:none;margin:0;padding:0;position:relative;display:flex;justify-content:space-between;align-items:flex-end;gap:8px}
+.days::before{content:"";position:absolute;inset-inline:0;bottom:30px;height:2px;background:linear-gradient(90deg,#6AA6F5,rgba(255,255,255,.15))}
+.days li{position:relative;text-align:center;flex:1}
+.days i{display:block;margin:0 auto;border-radius:50%;background:#6AA6F5;box-shadow:0 0 0 8px rgba(106,166,245,.18)}
+.days b{display:block;font-size:clamp(34px,6vw,84px);letter-spacing:-.04em;line-height:1;margin-bottom:22px}
+.days span{display:block;margin-top:14px;color:rgba(255,255,255,.65);font-size:15px}
+.rows{border-top:1.5px solid var(--ink)}
+.row{display:grid;gap:8px 40px;padding:30px 0;border-bottom:1px solid var(--line);grid-template-columns:1fr;transition:padding .25s}
+.row:hover{padding-inline-start:14px}
+.row h3{margin:0;font-size:clamp(24px,3vw,38px);letter-spacing:-.025em}
+.row p{margin:0;color:var(--mute);font-size:18px;max-width:34em}
+.rail{display:flex;gap:22px;overflow-x:auto;padding:8px 4px 28px;scroll-snap-type:x proximity}
+.rail .ph{flex:none;width:250px;scroll-snap-align:start;border-radius:34px;border:9px solid var(--ink);overflow:hidden;background:#fff}
+.rail .ph img{display:block;width:100%;height:auto}
+.free{background:var(--blue);color:#fff;border-radius:44px;padding:clamp(36px,6vw,88px);display:grid;gap:30px;align-items:end}
+.free h2{margin:0}.free h2 span{color:rgba(255,255,255,.5)}.free p{margin:0;font-size:19px;color:rgba(255,255,255,.85);max-width:28em}
+.free .btn{background:#fff;color:var(--deep);box-shadow:none;justify-self:start}
+.faq details{border-top:1px solid var(--line);padding:20px 0}.faq details:last-child{border-bottom:1px solid var(--line)}
+.faq summary{cursor:pointer;font-weight:600;font-size:20px}.faq p{margin:10px 0 0;color:var(--mute);font-size:17px;max-width:42em}
+.faq h2{margin-bottom:34px}
+footer{border-top:1px solid var(--line);padding:32px 0 48px;color:var(--mute);font-size:14px}footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:10px}
+@media (prefers-reduced-motion:reduce){.tk{animation:none}html{scroll-behavior:auto}.tk img,.row,.btn{transition:none}}
+@media (max-width:760px){.wall{grid-template-columns:repeat(2,1fr);gap:12px}.tk{border-radius:26px;padding:14px 16px}.top nav a:not(.go){display:none}section{padding:72px 0}.hero-row{margin:26px 0 30px}.days b{font-size:30px}.days span{font-size:12px}.parts li{flex-direction:column;gap:4px}}
+@media (min-width:900px){.explain{grid-template-columns:.8fr 1.2fr}.row{grid-template-columns:.9fr 1.1fr;align-items:baseline}.free{grid-template-columns:1.4fr 1fr}.free .btn{justify-self:end}}
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i,0)*80ms)}
+.rv.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><a class="brand" href="./"><img src="app/icon.png" alt=""><b>מוסמך</b></a>
+<nav><a href="#how">איך זה עובד</a><a href="#faq">שאלות</a><a href="app/" class="go">כניסה</a></nav></header>
+<div class="hero">
+  <h1>מוסמך.<span>מתרגלים. מבינים. עוברים.</span></h1>
+  <div class="hero-row">
+    <p class="lead">שאלות תרגול לפי נושאים, מבחני תרגול עם זמן ותוכנית לימוד אישית עד יום המבחן. בעברית ובאנגלית.</p>
+    <div class="cta"><a class="btn main" href="app/">להתחיל בדפדפן</a><a class="btn line" id="appstore" href="https://apps.apple.com/app/id6820664638">להורדה ל-iPhone <small>(App Store)</small></a></div>
+  </div>
+  <ul class="wall" aria-label="מסלולים"><li class="tk" style="--c:#3b6fd4;--d:0ms"><img src="app/src/img/nursing.webp" alt="" width="400" height="400"><b>סיעוד</b><a class="tkl" href="app/?s=1&amp;t=nursing" aria-label="סיעוד"></a></li><li class="tk" style="--c:#3f9e7e;--d:70ms"><img src="app/src/img/medicine.webp" alt="" width="400" height="400"><b>רפואה</b><a class="tkl" href="app/?s=1&amp;t=medicine" aria-label="רפואה"></a></li><li class="tk" style="--c:#e0833f;--d:140ms"><img src="app/src/img/physio.webp" alt="" width="400" height="400"><b>פיזיותרפיה</b><a class="tkl" href="app/?s=1&amp;t=physio" aria-label="פיזיותרפיה"></a></li><li class="tk" style="--c:#7a5bd6;--d:210ms"><img src="app/src/img/ot.webp" alt="" width="400" height="400"><b>ריפוי בעיסוק</b><a class="tkl" href="app/?s=1&amp;t=ot" aria-label="ריפוי בעיסוק"></a></li><li class="tk" style="--c:#cf5c85;--d:280ms"><img src="app/src/img/radiography.webp" alt="" width="400" height="400"><b>דימות רפואי</b><a class="tkl" href="app/?s=1&amp;t=radiography" aria-label="דימות רפואי"></a></li><li class="tk" style="--c:#2f7d8f;--d:350ms"><img src="app/src/img/optometry.webp" alt="" width="400" height="400"><b>אופטומטריה</b><a class="tkl" href="app/?s=1&amp;t=optometry" aria-label="אופטומטריה"></a></li><li class="tk" style="--c:#d9a441;--d:420ms"><img src="app/src/img/dental.webp" alt="" width="400" height="400"><b>רפואת שיניים</b><span class="soon">בקרוב</span></li><li class="tk" style="--c:#4a9a5c;--d:490ms"><img src="app/src/img/pharmacy.webp" alt="" width="400" height="400"><b>רוקחות</b><span class="soon">בקרוב</span></li></ul>
+  <p class="more">ועוד: קלינאות תקשורת, תזונה ודיאטנות.</p>
+</div>
+</div>
+
+<section id="how"><div class="wrap explain">
+  <div class="phone"><img src="assets/iphone_3-explanation.jpg" alt="מסך הסבר לתשובה באפליקציה" width="900" height="1956"></div>
+  <div>
+    <h2>אחרי כל שאלה<span>אתה יודע למה.</span></h2>
+    <ul class="parts">
+      <li>מה התשובה הנכונה<span>מודגשת מיד, בלי לחפש.</span></li>
+      <li>למה היא נכונה<span>הסבר קצר וברור.</span></li>
+      <li>למה האחרות שגויות<span>כל תשובה שגויה מוסברת בנפרד.</span></li>
+      <li>מקור<span>לכל שאלה מצוין ספר או מדריך.</span></li>
+    </ul>
+  </div>
+</div></section>
+
+<div class="wrap"><div class="tl">
+  <h2>טעית?<span>השאלה חוזרת.</span></h2>
+  <p>שאלה שטעית בה חוזרת בזמן הנכון, עד שהיא נתפסת.</p>
+  <ol class="days"><li><b>1</b><i style="width:14px;height:14px"></i><span>יום</span></li><li><b>3</b><i style="width:18px;height:18px"></i><span>ימים</span></li><li><b>7</b><i style="width:22px;height:22px"></i><span>ימים</span></li><li><b>14</b><i style="width:26px;height:26px"></i><span>ימים</span></li><li><b>30</b><i style="width:30px;height:30px"></i><span>ימים</span></li></ol>
+</div></div>
+
+<section><div class="wrap">
+  <h2>כל מה שצריך<span>לפני המבחן.</span></h2>
+  <div class="rows">
+    <div class="row"><h3>מבחני תרגול</h3><p>בוחרים נושאים ומספר שאלות, עד 180. עם זמן או בלי, מודרך או כמו במבחן האמיתי. אפשר לעצור ולהמשיך.</p></div>
+    <div class="row"><h3>משימה יומית</h3><p>10 שאלות שנבחרות בשבילך כל יום: טעויות, נושאים חלשים ותרגול מגוון.</p></div>
+    <div class="row"><h3>תוכנית עד המבחן</h3><p>לפי תאריך המבחן והזמן שלך: מה עושים היום, מה השבוע, ומתי מבחני תרגול.</p></div>
+    <div class="row"><h3>סטטיסטיקה</h3><p>דיוק לפי נושא, הצלחה בניסיון הראשון, מבחנים קודמים וזמן לשאלה.</p></div>
+    <div class="row"><h3>דף עזר וחישובים</h3><p>ערכי מעבדה, נוסחאות והמרות בתוך כל שאלה, וחישובי תרופות עם מספרים חדשים בכל פעם.</p></div>
+    <div class="row"><h3>ליגה שבועית</h3><p>תחרות בכיף עם נבחנים אחרים. רק כינוי ונקודות מוצגים, לא שם ולא מייל.</p></div>
+    <div class="row"><h3>עברית ואנגלית</h3><p>כל שאלה בשתי השפות, עם מילון מונחים עברית–אנגלית.</p></div>
+  </div>
+</div></section>
+
+<section style="padding-top:0"><div class="wrap">
+  <h2>כך זה נראה<span>בכיס.</span></h2>
+  <div class="rail">
+    <div class="ph"><img src="assets/app_tracks_1.jpg" alt="בחירת מסלול" width="900" height="1733"></div>
+    <div class="ph"><img src="assets/app_tracks_2.jpg" alt="עוד מסלולים" width="900" height="1759"></div>
+    <div class="ph"><img src="assets/app_home_nursing.jpg" alt="מסך ראשי במסלול סיעוד" width="900" height="1956"></div>
+    <div class="ph"><img src="assets/app_home_medicine.jpg" alt="מסך ראשי במסלול רפואה" width="900" height="1956"></div>
+  </div>
+</div></section>
+
+<div class="wrap"><div class="free">
+  <div><h2>30 שאלות בכל מסלול<span>בחינם.</span></h2><p>בלי כרטיס אשראי. להמשך יש מנויים ללא חידוש אוטומטי: חודש, חודשיים או שלושה, החל מ-99 ₪ לחודש.</p></div>
+  <a class="btn" href="app/">להתחיל עכשיו</a>
+</div></div>
+
+<section id="faq" class="faq"><div class="wrap">
+  <h2>שאלות נפוצות</h2>
+  <details><summary>כמה זה עולה?</summary><p>30 השאלות הראשונות בכל מסלול בחינם, בלי כרטיס אשראי. להמשך יש מנויים ללא חידוש אוטומטי: חודש, חודשיים או שלושה חודשים, החל מ-99 ₪ לחודש.</p></details>
+  <details><summary>מי כותב את השאלות?</summary><p>השאלות נכתבות ונבדקות על ידי אח מוסמך, ולכל שאלה מצוין מקור. מצאת טעות? יש כפתור „דיווח על טעות” בכל שאלה.</p></details>
+  <details><summary>יש גם מסלולים חוץ מסיעוד?</summary><p>כן! בנוסף לסיעוד יש רפואה, פיזיותרפיה, ריפוי בעיסוק, דימות רפואי ואופטומטריה. מסלולים נוספים ייפתחו בקרוב.</p></details>
+  <details><summary>יש גם אנדרואיד?</summary><p>בינתיים אפשר להשתמש באפליקציה מהדפדפן בכל טלפון. גרסת אנדרואיד בדרך.</p></details>
+  <details><summary>האם זה תחליף לספרי הלימוד?</summary><p>לא. מוסמך עוזר לתרגל ולחזור על החומר, ולא מבטיח ציון במבחן.</p></details>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="links"><a href="legal/terms-web-he.html">תנאי שימוש</a><a href="legal/privacy-he.html">מדיניות פרטיות</a><a href="mailto:mhmed6214@gmail.com">mhmed6214@gmail.com</a><a href="legal/terms-web-en.html" lang="en">Terms (English)</a></div>
+  <div>© 2026 מוחמד גרה · מוסמך</div>
+</div></footer>
+<script>
+/* scroll reveal + count-up: enhancement only, content is fully visible without it */
+(function(){
+  var d=document;
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches||!('IntersectionObserver' in window))return;
+  var els=[].slice.call(d.querySelectorAll('section h2,.tl h2,.tl p,.phone,.parts li,.days li,.row,.free,.faq details'));
+  els.forEach(function(e){
+    var sib=[].slice.call(e.parentNode.children).filter(function(x){return x.tagName===e.tagName});
+    e.style.setProperty('--i',Math.min(sib.indexOf(e),6));
+    e.classList.add('rv');
+  });
+  function count(li){
+    var b=li.querySelector('b');if(!b)return;
+    var n=parseInt(b.textContent,10);if(!n)return;
+    var t0=null;b.textContent='0';
+    function step(t){if(!t0)t0=t;var p=Math.min((t-t0)/900,1);b.textContent=Math.round(n*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(step)}
+    requestAnimationFrame(step);
+  }
+  var io=new IntersectionObserver(function(es){es.forEach(function(en){
+    if(!en.isIntersecting)return;
+    var e=en.target;io.unobserve(e);e.classList.add('in');
+    if(e.matches('.days li'))count(e);
+    setTimeout(function(){e.classList.remove('rv','in')},1600+(parseInt(e.style.getPropertyValue('--i'))||0)*80);
+  })},{threshold:.08});
+  els.forEach(function(e){io.observe(e)});
+})();
+</script>
+<script src="assets/visit.js" defer></script>
+</body>
+</html>
