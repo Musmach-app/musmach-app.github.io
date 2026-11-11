@@ -513,7 +513,12 @@ function viewTracks() {
   const tr = TRACKS.find(t => t.id === curTrack) || {};
   const state = tr.active ? "open" : tr.coming_soon ? "soon" : "hidden";
   const stLabel = { open: "🟢 مفتوح للطلاب", soon: "🟡 بقريبًا (ظاهر بس مقفول)", hidden: "⚪ مخفي" };
-  $("body").innerHTML = `<div class="card"><h3>حالة مسار ${esc(trackLabel(curTrack))}: ${stLabel[state]}</h3>
+  const allTr = TRACKS.filter(t => t.kind !== "course" && !/^stu|^archive|^zz/.test(t.id));
+  const stOf = t => t.active ? "open" : t.coming_soon ? "soon" : "hidden";
+  const allCard = `<div class="card"><h3>🗂️ كل المسارات – افتح وسكّر بدون تحديث</h3>
+    <p class="muted">🟢 مفتوح = الكل بيختاره ويتمرن · 🟡 بقريبًا = بيبين مع "בקרוב" ومقفول · ⚪ مخفي = ما بيبين. التغيير فوري بالتطبيق والموقع.</p>
+    <div class="tbl"><table><tbody>${allTr.map(t => `<tr><td class="he" dir="rtl"><b>${esc(t.he || t.id)}</b></td><td><div class="row" style="justify-content:flex-start;gap:6px;flex-wrap:nowrap">${["open","soon","hidden"].map(k => `<button class="btn ${k === stOf(t) ? "" : "ghost"}" data-all="${esc(t.id)}" data-k="${k}" style="flex:none;padding:6px 10px">${{open:"🟢",soon:"🟡",hidden:"⚪"}[k]}</button>`).join("")}</div></td></tr>`).join("")}</tbody></table></div></div>`;
+  $("body").innerHTML = allCard + `<div class="card"><h3>حالة مسار ${esc(trackLabel(curTrack))}: ${stLabel[state]}</h3>
     <p class="muted">"بقريبًا" = الطلاب بيشوفوه بالتطبيق مع كلمة "בקרוב" وما بيقدروا يفوتوا عليه. لما تجهز الأسئلة، افتحه.</p>
     <div class="row" style="justify-content:flex-start">${["open","soon","hidden"].map(k => `<button class="btn ${k === state ? "" : "ghost"}" data-st="${k}" style="flex:none">${stLabel[k]}</button>`).join("")}</div></div>
   <div class="card"><h3>مواضيع مسار ${esc(trackLabel(curTrack))}</h3>
@@ -527,6 +532,15 @@ function viewTracks() {
     if (k === "open" && !confirm("متأكد؟ لما تفتح المسار، الطلاب الجداد بيقدروا يختاروه ويحلّوا أسئلته.")) return;
     const { error } = await sb.from("tracks").update({ active: k === "open", coming_soon: k === "soon" }).eq("id", curTrack);
     if (error) msg(/coming_soon/.test(error.message) ? "لازم تشغّل supabase/migration-19-coming-soon.sql أول." : error.message, false); else msg("تغيّرت حالة المسار");
+    await loadMeta(); render();
+  });
+  $("body").querySelectorAll("[data-all]").forEach(b => b.onclick = async () => {
+    const id = b.dataset.all, k = b.dataset.k, t = TRACKS.find(x => x.id === id);
+    if (!t || k === stOf(t)) return;
+    const nm = t.he || id, word = { open: "تفتح", soon: "تحط \"בקרוב\" على", hidden: "تخفي" }[k];
+    if (!confirm(`متأكد إنك بدك ${word} مسار ${nm}؟`)) return;
+    const { error } = await sb.from("tracks").update({ active: k === "open", coming_soon: k === "soon" }).eq("id", id);
+    if (error) msg(error.message, false); else msg(`تغيّرت حالة ${nm}`);
     await loadMeta(); render();
   });
   $("ft").onsubmit = async e => {
@@ -1099,7 +1113,7 @@ async function viewStats() {
     sb.from("entitlements").select("user_id").gt("until", now).eq("sandbox", false).limit(5000),
     sb.from("questions").select("id", { count: "exact", head: true }),
     sb.from("questions").select("id", { count: "exact", head: true }).eq("published", true),
-    sb.from("app_settings").select("free_mode").eq("id", 1).maybeSingle(),
+    sb.from("app_settings").select("free_mode,min_build").eq("id", 1).maybeSingle(),
   ]);
   let h = "";
   if (error || !r) {
@@ -1138,8 +1152,16 @@ async function viewStats() {
     : `<div class="card"><b>الوضع المجاني: ${cfg.free_mode ? "🟢 شغّال (كل الأسئلة ببلاش)" : "⚪ مطفي (بدها اشتراك)"}</b>
        <p class="muted">لما يكون شغّال، كل طالب مسجّل بيحل كل أسئلة مساره بدون اشتراك.</p>
        <button class="btn" id="fm" style="align-self:flex-start">${cfg.free_mode ? "طفّي الوضع المجاني" : "شغّل الوضع المجاني"}</button></div>`;
+  if (cfg && !ce) h += `<div class="card"><b>📲 إجبار التحديث: ${cfg.min_build ? `أي نسخة أقدم من بناء ${cfg.min_build} لازم تتحدّث` : "مطفي (كل النسخ شغّالة)"}</b>
+       <p class="muted">اكتب رقم البناء الأقل المسموح (مثلاً 94). اللي عنده نسخة أقدم بتطلعله شاشة "יש גרסה חדשה" مع زر للـApp Store. 0 = مطفي. بشتغل من نسخة 1.0.7 وطالع.</p>
+       <div class="row" style="justify-content:flex-start"><input id="mbv" type="number" min="0" dir="ltr" value="${cfg.min_build || 0}" style="max-width:120px"><button class="btn" id="mbs" style="flex:none">حفظ</button></div></div>`;
   $("st").innerHTML = h; $("st").style.cssText = "display:flex;flex-direction:column;gap:12px";
   if ($("fm")) $("fm").onclick = async () => { await sb.from("app_settings").update({ free_mode: !cfg.free_mode }).eq("id", 1); viewStats(); };
+  if ($("mbs")) $("mbs").onclick = async () => {
+    const v = Math.max(0, parseInt($("mbv").value, 10) || 0);
+    if (v && !confirm(`متأكد؟ كل نسخة أقدم من بناء ${v} رح تنقفل لحد ما يحدّثوا.`)) return;
+    await sb.from("app_settings").update({ min_build: v }).eq("id", 1); viewStats();
+  };
 }
 
 start();
