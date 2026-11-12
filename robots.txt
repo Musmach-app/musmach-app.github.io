@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /panel/
+Disallow: /app-prev/
+Disallow: /ig/
+
+Sitemap: https://musmach.co.il/sitemap.xml
