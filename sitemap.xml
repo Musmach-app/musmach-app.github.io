@@ -14,4 +14,37 @@
   <url><loc>https://musmach.co.il/legal/privacy-he.html</loc><priority>0.2</priority></url>
   <url><loc>https://musmach.co.il/legal/terms-en.html</loc><priority>0.2</priority></url>
   <url><loc>https://musmach.co.il/legal/privacy-en.html</loc><priority>0.2</priority></url>
+  <url><loc>https://musmach.co.il/medicine/internal/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/medicine/surgery/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/medicine/pediatrics/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/medicine/cardiology/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/medicine/obgyn/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/medicine/infectious/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/medicine/emergency/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/medicine/neurology/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/medicine/psychiatry/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/nursing/internal/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/nursing/surgery/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/nursing/pharmacology/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/nursing/obstetrics/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/nursing/pediatrics/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/nursing/mental-health/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/nursing/drug-calculations/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/nursing/ethics-law/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/optometry/refraction/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/optometry/anatomy-pathology/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/optometry/contact-lenses/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/optometry/optics/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/optometry/law-ethics/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/optometry/myopia-control/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/optometry-practical/station-1/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/optometry-practical/station-2/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/optometry-practical/station-3/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/optometry-practical/station-4/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/optometry-practical/station-5/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/optometry-practical/station-6/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/ot/pediatrics/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/ot/development/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/physio/orthopedics/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://musmach.co.il/radiography/physics/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>
