@@ -702,7 +702,7 @@ async function viewUsers() {
     const E = (ents[u.id] || []).slice().sort((a, b) => (a.until < b.until ? 1 : -1));
     const real = E.filter(e => !e.sandbox), test = E.length && !real.length;
     const st = real.length ? "paid" : test ? "test" : "free";
-    const n = +u.n_answers || 0, last = u.seen_at || u.last_at;
+    const n = +u.n_answers || 0, last = u.last_active || u.seen_at || u.last_at;
     return { ...u, E, real, st, n, last, ago: last ? Math.floor((now - new Date(last)) / DAY) : null, actAgo: u.last_at ? Math.floor((now - new Date(u.last_at)) / DAY) : null };
   });
   const F = {
@@ -713,6 +713,8 @@ async function viewUsers() {
     limit: [`⚠️ خلّصوا الـ ${FREE} المجانية`, u => u.st === "free" && u.n >= FREE],
     active: ["🔥 نشطين آخر 7 أيام", u => u.actAgo != null && u.actAgo < 7],
     never: ["💤 ما حلّوا ولا سؤال", u => u.n === 0],
+    app: ["📱 سجّلوا من التطبيق", u => u.signup_via === "app"],
+    web: ["💻 سجّلوا من الموقع", u => u.signup_via === "web"],
   };
   if (!F[s.f]) s.f = "all";
   const fun = [["سجّلوا", all.length], ["حلّوا سؤال", all.filter(u => u.n > 0).length], [`وصلوا لـ ${FREE}`, all.filter(u => u.n >= FREE).length], ["دفعوا", all.filter(u => u.st === "paid").length]];
@@ -722,6 +724,8 @@ async function viewUsers() {
   $("usort").value = s.sort;
   $("usort").onchange = () => { s.sort = $("usort").value; viewUsers(); };
   $("uq").oninput = () => { s.q = $("uq").value.trim(); draw(); };
+  const PROV = { email: "إيميل", apple: "Apple", google: "Google" };
+  const uVia = u => `<span class="muted" style="font-size:12.5px">${u.signup_via === "app" ? "📱 سجّل من التطبيق" : u.signup_via === "web" ? "💻 سجّل من الموقع" : "—"}${u.platforms && u.platforms !== (u.signup_via === "app" ? "ios" : "web") ? ` · بستعمل: ${esc(u.platforms)}` : ""}${u.provider ? ` · ${esc(PROV[u.provider] || u.provider)}` : ""}${u.push_on ? " · 🔔 إشعارات" : ""}${+u.plan_views ? ` · شاف الأسعار ${num(u.plan_views)}×` : ""}${+u.buy_starts ? ` · ضغط اشتري ${num(u.buy_starts)}×` : ""}</span>`;
   const ago = d => d == null ? "—" : d === 0 ? "اليوم" : d === 1 ? "مبارح" : `قبل ${d} يوم`;
   const planName = e => e.plan === "code" ? "كود" : e.plan === "exam" ? "لحد الامتحان" : e.plan === "admin" ? "منح يدوي" : "اشتراك";
   const status = u => u.st === "paid" ? `<span class="pill" style="background:#E3F6EA;color:#1E7A45">💳 ${planName(u.real[0])} · لحد ${esc(String(u.real[0].until).slice(0, 10))}${u.real.length > 1 ? ` · ${u.real.length} مسارات` : ""}</span>`
@@ -736,9 +740,9 @@ async function viewUsers() {
     const newToday = all.filter(u => new Date(u.created_at).toLocaleDateString("en-CA", { timeZone: "Asia/Jerusalem" }) === today).length;
     $("ucount").textContent = `بيعرض ${list.length} من ${all.length} · سجّلوا اليوم: ${newToday}`;
     $("rows").innerHTML = list.map(u => `<tr>
-      <td><a href="#" data-uid="${esc(u.id)}" dir="ltr" style="font-weight:600">${esc(u.email || "ضيف (بدون إيميل)")}</a><br><span class="muted he" style="font-size:13px">${esc(u.track ? trackLabel(u.track) : "بدون مسار")}${u.exam_date ? ` · امتحان ${esc(String(u.exam_date).slice(0, 7))}` : ""}</span></td>
+      <td><a href="#" data-uid="${esc(u.id)}" dir="ltr" style="font-weight:600">${esc(u.email || "ضيف (بدون إيميل)")}</a><br><span class="muted he" style="font-size:13px">${esc(u.track ? trackLabel(u.track) : "بدون مسار")}${u.exam_date ? ` · امتحان ${esc(String(u.exam_date).slice(0, 7))}` : ""}</span><br>${uVia(u)}</td>
       <td>${status(u)}</td>
-      <td>${u.n ? `<b>${num(u.n)}</b> سؤال <span class="muted">· ${Math.round(100 * u.n_correct / u.n)}% صح</span>` : `<span class="muted">ما حلّ</span>`}<br><span class="muted" style="font-size:13px">آخر دخول: ${ago(u.ago)}${+u.devices ? ` · ${num(u.devices)} جهاز <a href="#" data-rd="${esc(u.id)}" data-em="${esc(u.email || "")}" title="مسح الأجهزة" style="text-decoration:none">↺</a>` : ""}</span></td>
+      <td>${u.n ? `<b>${num(u.n)}</b> سؤال <span class="muted">· ${Math.round(100 * u.n_correct / u.n)}% صح</span>` : `<span class="muted">ما حلّ</span>`}<br><span class="muted" style="font-size:13px">آخر دخول: ${ago(u.ago)}${u.last ? ` · <span dir="ltr">${esc(fmtDT(u.last))}</span>` : ""}${+u.devices ? ` · ${num(u.devices)} جهاز <a href="#" data-rd="${esc(u.id)}" data-em="${esc(u.email || "")}" title="مسح الأجهزة" style="text-decoration:none">↺</a>` : ""}</span></td>
       <td dir="ltr" style="text-align:start;white-space:nowrap">${esc(fmtDT(u.created_at))}</td>
       <td><button class="btn ghost" data-del="${esc(u.id)}" data-em="${esc(u.email || "")}" style="flex:none;padding:4px 10px;color:#C0392B">🗑</button></td></tr>`).join("")
       || `<tr><td colspan="5" class="muted">ما في مستخدمين بهالفلتر</td></tr>`;
