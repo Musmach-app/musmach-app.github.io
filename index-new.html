@@ -246,9 +246,9 @@ footer a{color:#fff;text-decoration:none}footer a:hover{text-decoration:underlin
   <p class="sub">משלמים פעם אחת, בלי חידוש אוטומטי. ואם לא בטוחים, מתחילים מ-30 שאלות בחינם.</p>
   <div class="tabs"><button class="on" data-t="n">סיעוד</button><button data-t="m">רפואה</button><button data-t="o">שאר המקצועות</button></div>
   <div class="pcards">
-    <div class="pc" id="p2" hidden><h3>חודשיים</h3><div class="pr"><span data-n="" data-o="199" data-m="249">199</span><small> ₪</small></div><p class="pm">תשלום אחד</p><a class="btn b3" href="app/?new=1">להתחיל</a></div>
-    <div class="pc"><h3>3 חודשים</h3><div class="pr"><span data-n="299" data-o="299" data-m="349">299</span><small> ₪</small></div><p class="pm">תשלום אחד</p><a class="btn b3" href="app/?new=1">להתחיל</a></div>
-    <div class="pc best"><h3>5 חודשים<span class="tag">הכי משתלם</span></h3><div class="pr"><span data-n="399" data-o="399" data-m="449">399</span><small> ₪</small></div><p class="pm">תשלום אחד</p><a class="btn b1" href="app/?new=1">להתחיל</a></div>
+    <div class="pc" id="p2" hidden><h3>חודשיים</h3><div class="pr"><span data-n="" data-o="199" data-m="249">199</span><small> ₪</small></div><p class="pm">תשלום אחד</p><a class="btn b3" data-buy="m2" href="/buy/?t=physio&amp;p=m2">לרכישה</a></div>
+    <div class="pc"><h3>3 חודשים</h3><div class="pr"><span data-n="299" data-o="299" data-m="349">299</span><small> ₪</small></div><p class="pm">תשלום אחד</p><a class="btn b3" data-buy="m3" href="/buy/?t=nursing&amp;p=m3">לרכישה</a></div>
+    <div class="pc best"><h3>5 חודשים<span class="tag">הכי משתלם</span></h3><div class="pr"><span data-n="399" data-o="399" data-m="449">399</span><small> ₪</small></div><p class="pm">תשלום אחד</p><a class="btn b1" data-buy="m5" href="/buy/?t=nursing&amp;p=m5">לרכישה</a></div>
   </div>
   <p class="pnote">המחירים לרכישה באתר. ב-iPhone המחיר מופיע ב-App Store.</p>
 </div></section>
@@ -271,9 +271,9 @@ footer a{color:#fff;text-decoration:none}footer a:hover{text-decoration:underlin
     <div><h4>מוסמך</h4><p>שאלות למבחני הרישוי של משרד הבריאות, עם הסבר לכל תשובה.</p></div>
     <div><h4>מידע על המבחנים</h4><ul><li><a href="/nursing/">סיעוד</a></li><li><a href="/medicine/">רפואה</a></li><li><a href="/physio/">פיזיותרפיה</a></li><li><a href="/ot/">ריפוי בעיסוק</a></li><li><a href="/radiography/">דימות רפואי</a></li><li><a href="/optometry/">אופטומטריה – עיוני</a></li><li><a href="/optometry-practical/">אופטומטריה – מעשי</a></li></ul></div>
     <div><h4>קישורים</h4><ul><li><a href="app/?new=1">הרשמה</a></li><li><a href="app/?login=1">כניסה</a></li><li><a href="https://apps.apple.com/app/id6820664638">אפליקציה ל-iPhone</a></li><li><a href="mailto:Musmachrishui@gmail.com" data-contact>צור קשר</a></li></ul></div>
-    <div><h4>מסמכים</h4><ul><li><a href="legal/terms-web-he.html">תנאי שימוש</a></li><li><a href="legal/privacy-he.html">מדיניות פרטיות</a></li><li><a href="legal/terms-web-en.html">Terms (English)</a></li></ul></div>
+    <div><h4>מסמכים</h4><ul><li><a href="legal/terms-web-he.html">תקנון ותנאי שימוש</a></li><li><a href="/buy/">רכישת מנוי</a></li><li><a href="legal/privacy-he.html">מדיניות פרטיות</a></li><li><a href="legal/terms-web-en.html">Terms (English)</a></li></ul></div>
   </div>
-  <div class="copy">© 2026 מוסמך</div>
+  <div class="copy">© 2026 מוסמך · מוחמד גרה, עוסק פטור · באקה ג׳ת · 050-502-3423</div>
 </div></footer>
 <div class="mcta" id="mcta"><a class="btn b1" href="app/?new=1">30 שאלות בחינם</a></div>
 <div class="cx" id="cx" role="dialog" aria-modal="true" aria-labelledby="cxh"><div class="cx-b">
@@ -286,7 +286,7 @@ footer a{color:#fff;text-decoration:none}footer a:hover{text-decoration:underlin
 <script>(function(){var c=document.getElementById("cx");function o(e){e.preventDefault();c.classList.add("on")}function x(){c.classList.remove("on")}
 document.querySelectorAll("[data-contact]").forEach(function(a){a.addEventListener("click",o)});
 c.addEventListener("click",function(e){if(e.target===c||e.target.hasAttribute("data-cx"))x()});document.addEventListener("keydown",function(e){if(e.key==="Escape")x()});
-document.querySelectorAll(".tabs button").forEach(function(b){b.addEventListener("click",function(){document.querySelectorAll(".tabs button").forEach(function(x){x.classList.toggle("on",x===b)});var t=b.dataset.t;document.getElementById("p2").hidden=t==="n";document.querySelectorAll(".pr span").forEach(function(s){if(s.dataset[t])s.textContent=s.dataset[t]})})});
+document.querySelectorAll(".tabs button").forEach(function(b){b.addEventListener("click",function(){document.querySelectorAll(".tabs button").forEach(function(x){x.classList.toggle("on",x===b)});var t=b.dataset.t,tt={n:"nursing",m:"medicine",o:"physio"}[t];document.querySelectorAll("[data-buy]").forEach(function(a){a.href="/buy/?t="+tt+"&p="+a.dataset.buy});document.getElementById("p2").hidden=t==="n";document.querySelectorAll(".pr span").forEach(function(s){if(s.dataset[t])s.textContent=s.dataset[t]})})});
 document.querySelectorAll(".tp-tabs button").forEach(function(b){b.addEventListener("click",function(){document.querySelectorAll(".tp-tabs button").forEach(function(x){x.classList.toggle("on",x===b)});document.querySelectorAll(".tp-p").forEach(function(p){p.hidden=p.dataset.tp!==b.dataset.tp})})});
 var io="IntersectionObserver" in window?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.12}):null;
 document.querySelectorAll(".rv").forEach(function(el){io?io.observe(el):el.classList.add("in")});

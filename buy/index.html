@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>רכישת מנוי – מוסמך</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0F1F44;--mute:#5B6B86;--line:#DCE4F1;--cream:#F5F8FD;--navy:#0F2A6B;--acc:#2F80FF;--acc2:#1546B8;--bad:#B3261E;--ok:#1E7F45}
+*{box-sizing:border-box}
+body{margin:0;font-family:Heebo,Arial,sans-serif;color:var(--ink);background:var(--cream);font-size:17px;line-height:1.6}
+a{color:var(--acc2)}
+.top{background:var(--navy);color:#fff}
+.top .w{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{color:#fff;text-decoration:none;font-weight:800;font-size:22px}
+.w{max-width:640px;margin:0 auto;padding:0 20px}
+h1{font-size:30px;margin:28px 0 4px;line-height:1.2}
+.sub{color:var(--mute);margin:0 0 22px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:16px}
+.card h2{font-size:19px;margin:0 0 14px}
+label{display:block;font-weight:500;font-size:15px;margin-bottom:6px}
+input[type=text],input[type=email],input[type=tel],select{width:100%;font:inherit;border:1px solid var(--line);border-radius:10px;padding:12px;background:#fff;color:var(--ink)}
+input:focus,select:focus{outline:2px solid var(--acc);outline-offset:1px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.f{margin-bottom:14px}
+@media(max-width:520px){.row{grid-template-columns:1fr}}
+.plans{display:grid;gap:10px}
+.plan{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:12px;padding:14px;cursor:pointer}
+.plan input{width:20px;height:20px;accent-color:var(--acc2)}
+.plan b{flex:1}
+.plan .pr{font-weight:800;font-size:20px}
+.plan:has(input:checked){border-color:var(--acc2);background:#F1F6FF}
+.chk{display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:16px}
+.chk input{width:20px;height:20px;margin-top:3px;accent-color:var(--acc2);flex:none}
+.btn{display:block;width:100%;border:0;border-radius:12px;padding:16px;font:inherit;font-weight:800;font-size:19px;background:var(--acc);color:#fff;cursor:pointer}
+.btn:hover{background:var(--acc2)}.btn:disabled{opacity:.6;cursor:default}
+.note{font-size:14px;color:var(--mute);margin:12px 0 0}
+.err{color:var(--bad);font-size:15px;margin-top:10px}
+.msg{border-radius:14px;padding:18px;margin:20px 0;font-size:17px}
+.msg.ok{background:#EAF6EE;color:var(--ok)}.msg.bad{background:#FBEDEC;color:var(--bad)}
+footer{color:var(--mute);font-size:14px;padding:26px 0 40px;text-align:center}
+footer a{color:var(--mute)}
+</style>
+</head>
+<body>
+<div class="top"><div class="w"><a class="logo" href="/">מוסמך</a><a href="/" style="color:#fff;font-size:15px">חזרה לאתר</a></div></div>
+<main class="w">
+<h1>רכישת מנוי</h1>
+<p class="sub">תשלום אחד בכרטיס אשראי, בלי חידוש אוטומטי.</p>
+<div id="res"></div>
+<form id="fm" novalidate>
+  <div class="card">
+    <h2>1. מקצוע ומנוי</h2>
+    <div class="f"><label for="track">מקצוע</label>
+      <select id="track" name="track">
+        <option value="nursing">סיעוד</option><option value="medicine">רפואה</option><option value="physio">פיזיותרפיה</option>
+        <option value="ot">ריפוי בעיסוק</option><option value="radiography">דימות רפואי</option><option value="optometry">אופטומטריה</option>
+      </select></div>
+    <div class="plans" id="plans" role="radiogroup" aria-label="מנוי"></div>
+  </div>
+  <div class="card">
+    <h2>2. פרטים אישיים</h2>
+    <div class="row">
+      <div><label for="fn">שם פרטי</label><input id="fn" type="text" autocomplete="given-name" required></div>
+      <div><label for="ln">שם משפחה</label><input id="ln" type="text" autocomplete="family-name" required></div>
+    </div>
+    <div class="row">
+      <div><label for="ph">טלפון</label><input id="ph" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="0501234567" required></div>
+      <div><label for="co">מדינה</label><select id="co" autocomplete="country-name"><option>ישראל</option><option>אחר</option></select></div>
+    </div>
+    <div class="f"><label for="em">אימייל</label><input id="em" type="email" autocomplete="email" dir="ltr" required></div>
+    <p class="note" style="margin-top:0">המנוי מופעל בחשבון שרשום עם המייל הזה, באתר ובאפליקציה. הקבלה נשלחת לאותו מייל.</p>
+  </div>
+  <div class="card">
+    <label class="chk"><input id="tc" type="checkbox"> <span>קראתי ואני מסכים/ה ל<a href="/legal/terms-web-he.html" target="_blank" rel="noopener">תקנון ותנאי השימוש</a> ול<a href="/legal/privacy-he.html" target="_blank" rel="noopener">מדיניות הפרטיות</a>, ומאשר/ת שמלאו לי 18.</span></label>
+  </div>
+  <button class="btn" id="go" type="submit">לתשלום</button>
+  <div class="err" id="er" role="alert" hidden></div>
+  <p class="note">התשלום מתבצע בעמוד מאובטח של חברת הסליקה. פרטי הכרטיס לא עוברים דרכנו. ביטול והחזר תוך 14 יום לפי <a href="/legal/terms-web-he.html#cancel">התקנון</a>.</p>
+</form>
+</main>
+<footer><div class="w">מוסמך · מוחמד גרה, עוסק פטור · באקה ג׳ת · <a href="mailto:Musmachrishui@gmail.com">Musmachrishui@gmail.com</a> · 050-502-3423<br><a href="/legal/terms-web-he.html">תקנון</a> · <a href="/legal/privacy-he.html">פרטיות</a></div></footer>
+<script>
+(function(){
+var FN="https://bbslhbcmfjfjbvqqcebg.supabase.co/functions/v1/pay-create";
+var P={nursing:{m3:299,m5:399},medicine:{m2:249,m3:349,m5:449},other:{m2:199,m3:299,m5:399}};
+var L={m2:"חודשיים",m3:"3 חודשים",m5:"5 חודשים"};
+var q=new URLSearchParams(location.search),$=function(i){return document.getElementById(i)};
+var res=$("res");
+if(q.get("ok")){res.innerHTML='<div class="msg ok"><b>התשלום התקבל, תודה!</b><br>המנוי יופעל בחשבון שלך תוך זמן קצר, והקבלה נשלחה למייל. אפשר <a href="/app/?login=1">להיכנס לאפליקציה</a>.</div>';$("fm").hidden=true;return}
+if(q.get("fail"))res.innerHTML='<div class="msg bad">התשלום לא הושלם ולא חויבת. אפשר לנסות שוב.</div>';
+var tr=$("track");if(q.get("t")&&tr.querySelector('option[value="'+q.get("t")+'"]'))tr.value=q.get("t");
+function draw(){var t=P[tr.value]||P.other,want=q.get("p"),keys=Object.keys(t),sel=t[want]?want:(t.m3?"m3":keys[0]);
+$("plans").innerHTML=keys.map(function(k){return '<label class="plan"><input type="radio" name="plan" value="'+k+'"'+(k===sel?" checked":"")+'><b>'+L[k]+(k==="m5"?' <small style="color:#1546B8">· הכי משתלם</small>':'')+'</b><span class="pr">'+t[k]+' ₪</span></label>'}).join("")}
+tr.onchange=draw;draw();
+function bad(m,el){var e=$("er");e.textContent=m;e.hidden=false;if(el)el.focus()}
+$("fm").onsubmit=function(ev){ev.preventDefault();$("er").hidden=true;
+  var fn=$("fn").value.trim(),ln=$("ln").value.trim(),ph=$("ph").value.replace(/\D/g,""),em=$("em").value.trim(),pl=(document.querySelector('input[name=plan]:checked')||{}).value;
+  if(!fn)return bad("נא למלא שם פרטי",$("fn"));if(!ln)return bad("נא למלא שם משפחה",$("ln"));
+  if(ph.length<9||ph.length>12)return bad("נא למלא מספר טלפון תקין",$("ph"));
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em))return bad("נא למלא כתובת מייל תקינה",$("em"));
+  if(!$("tc").checked)return bad("יש לאשר את התקנון כדי להמשיך",$("tc"));
+  var b=$("go");b.disabled=true;b.textContent="מעבירים לתשלום…";
+  fetch(FN,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({first_name:fn,last_name:ln,phone:ph,country:$("co").value,email:em,track:tr.value,plan:pl,terms:true})})
+  .then(function(r){return r.json().catch(function(){return{}})}).then(function(d){
+    if(d&&d.url){location.href=d.url;return}
+    b.disabled=false;b.textContent="לתשלום";
+    if(d&&d.error==="rate")bad("יותר מדי ניסיונות. נסו שוב בעוד שעה.");
+    else bad("התשלום בכרטיס אשראי עוד לא זמין. אפשר לרכוש מנוי בוואטסאפ 050-502-3423.");
+  }).catch(function(){b.disabled=false;b.textContent="לתשלום";bad("אין חיבור. נסו שוב.")})};
+})();
+</script>
+</body>
+</html>
