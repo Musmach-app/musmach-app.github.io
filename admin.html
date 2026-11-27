@@ -618,7 +618,7 @@ let userState = { q: "", page: 0, sub: "list", f: "all", sort: "new" };
 const fmtDT = d => d ? new Date(d).toLocaleString("en-GB", { timeZone: "Asia/Jerusalem", day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "—";
 async function viewUsers() {
   const s = userState, PAGE = 50;
-  const SUBS = [["list","📋 قائمة المستخدمين"],["grant","🔓 فتح مسارات لحساب"],["editors","🛡️ ادمن محدود"]];
+  const SUBS = [["list","📋 قائمة المستخدمين"],["guests","👀 الضيوف"],["grant","🔓 فتح مسارات لحساب"],["editors","🛡️ ادمن محدود"]];
   const sv = SUBS.some(x => x[0] === s.sub) ? s.sub : "list";
   $("body").innerHTML = `<div class="subtabs">${SUBS.map(([k,n]) => `<button data-sub="${k}" class="${sv===k?"on":""}">${n}</button>`).join("")}</div>` +
     (sv === "editors" ? `<div class="card"><h3>إضافة ادمن بصلاحيات محدودة</h3>
@@ -698,7 +698,9 @@ async function viewUsers() {
   const nowISO = new Date().toISOString(), now = Date.now(), DAY = 864e5, FREE = 30;
   const { data: en } = await sb.from("entitlements").select("user_id,track,plan,until,sandbox").gt("until", nowISO).limit(5000);
   const ents = {}; (en || []).forEach(e => (ents[e.user_id] || (ents[e.user_id] = [])).push(e));
-  const all = (ins || []).map(u => {
+  // 27/11: guests (no email) have their own tab; the users list shows real accounts only
+  const isG = sv === "guests";
+  const all = (ins || []).filter(u => isG ? !u.email : !!u.email).map(u => {
     const E = (ents[u.id] || []).slice().sort((a, b) => (a.until < b.until ? 1 : -1));
     const real = E.filter(e => !e.sandbox), test = E.length && !real.length;
     const st = real.length ? "paid" : test ? "test" : "free";
@@ -716,9 +718,17 @@ async function viewUsers() {
     app: ["📱 سجّلوا من التطبيق", u => u.signup_via === "app"],
     web: ["💻 سجّلوا من الموقع", u => u.signup_via === "web"],
   };
+  const FG = {
+    all: ["الكل", () => true],
+    started: ["✍️ بلّشوا يحلّوا", u => u.n > 0],
+    limit: [`🏁 خلّصوا الـ ${FREE}`, u => u.n >= FREE],
+    never: ["💤 ما حلّوا ولا سؤال", u => u.n === 0],
+    active: ["🔥 نشطين آخر 7 أيام", u => u.actAgo != null && u.actAgo < 7],
+  };
+  if (isG) { Object.keys(F).forEach(k => delete F[k]); Object.assign(F, FG); }
   if (!F[s.f]) s.f = "all";
-  const fun = [["سجّلوا", all.length], ["حلّوا سؤال", all.filter(u => u.n > 0).length], [`وصلوا لـ ${FREE}`, all.filter(u => u.n >= FREE).length], ["دفعوا", all.filter(u => u.st === "paid").length]];
-  $("ufun").innerHTML = `<div class="card"><b>من التسجيل للدفع</b><div class="row" style="justify-content:flex-start;flex-wrap:wrap;gap:8px">${fun.map(([k, v], i) => `${i ? `<span class="muted" style="flex:none">←</span>` : ""}<span class="pill" style="flex:none">${k}: <b>${num(v)}</b>${i && fun[i-1][1] ? ` <span class="muted">(${Math.round(100 * v / fun[i-1][1])}%)</span>` : ""}</span>`).join("")}</div></div>`;
+  const fun = isG ? [["دخلوا كضيوف", all.length], ["حلّوا سؤال", all.filter(u => u.n > 0).length], ["وصلوا لـ 10", all.filter(u => u.n >= 10).length], [`خلّصوا الـ ${FREE}`, all.filter(u => u.n >= FREE).length]] : [["سجّلوا", all.length], ["حلّوا سؤال", all.filter(u => u.n > 0).length], [`وصلوا لـ ${FREE}`, all.filter(u => u.n >= FREE).length], ["دفعوا", all.filter(u => u.st === "paid").length]];
+  $("ufun").innerHTML = `<div class="card"><b>${isG ? "مسار الضيوف" : "من التسجيل للدفع"}</b><div class="row" style="justify-content:flex-start;flex-wrap:wrap;gap:8px">${fun.map(([k, v], i) => `${i ? `<span class="muted" style="flex:none">←</span>` : ""}<span class="pill" style="flex:none">${k}: <b>${num(v)}</b>${i && fun[i-1][1] ? ` <span class="muted">(${Math.round(100 * v / fun[i-1][1])}%)</span>` : ""}</span>`).join("")}</div></div>`;
   $("ufil").innerHTML = Object.entries(F).map(([k, [n, f]]) => `<button data-f="${k}" class="${s.f === k ? "on" : ""}">${n} <span class="muted">${all.filter(f).length}</span></button>`).join("");
   $("ufil").querySelectorAll("[data-f]").forEach(b => b.onclick = () => { s.f = b.dataset.f; viewUsers(); });
   $("usort").value = s.sort;
@@ -738,9 +748,9 @@ async function viewUsers() {
     list.sort(by[s.sort] || by.new);
     const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jerusalem" });
     const newToday = all.filter(u => new Date(u.created_at).toLocaleDateString("en-CA", { timeZone: "Asia/Jerusalem" }) === today).length;
-    $("ucount").textContent = `بيعرض ${list.length} من ${all.length} · سجّلوا اليوم: ${newToday}`;
+    $("ucount").textContent = `بيعرض ${list.length} من ${all.length} · ${isG ? "دخلوا اليوم" : "سجّلوا اليوم"}: ${newToday}`;
     $("rows").innerHTML = list.map(u => `<tr>
-      <td><a href="#" data-uid="${esc(u.id)}" dir="ltr" style="font-weight:600">${esc(u.email || "ضيف (بدون إيميل)")}</a><br><span class="muted he" style="font-size:13px">${esc(u.track ? trackLabel(u.track) : "بدون مسار")}${u.exam_date ? ` · امتحان ${esc(String(u.exam_date).slice(0, 7))}` : ""}</span><br>${uVia(u)}</td>
+      <td><a href="#" data-uid="${esc(u.id)}" dir="ltr" style="font-weight:600">${esc(u.email || "ضيف #" + String(u.id).slice(0, 4).toUpperCase())}</a><br><span class="muted he" style="font-size:13px">${esc(u.track ? trackLabel(u.track) : "بدون مسار")}${u.exam_date ? ` · امتحان ${esc(String(u.exam_date).slice(0, 7))}` : ""}</span><br>${uVia(u)}</td>
       <td>${status(u)}</td>
       <td>${u.n ? `<b>${num(u.n)}</b> سؤال <span class="muted">· ${Math.round(100 * u.n_correct / u.n)}% صح</span>` : `<span class="muted">ما حلّ</span>`}<br><span class="muted" style="font-size:13px">آخر دخول: ${ago(u.ago)}${u.last ? ` · <span dir="ltr">${esc(fmtDT(u.last))}</span>` : ""}${+u.devices ? ` · ${num(u.devices)} جهاز <a href="#" data-rd="${esc(u.id)}" data-em="${esc(u.email || "")}" title="مسح الأجهزة" style="text-decoration:none">↺</a>` : ""}</span></td>
       <td dir="ltr" style="text-align:start;white-space:nowrap">${esc(fmtDT(u.created_at))}</td>
@@ -1060,7 +1070,7 @@ async function viewUserDetail(id) {
   const sec = (title, body) => `<div class="card"><b>${title}</b>${body}</div>`;
   const kv = (k, v) => `<div class="li"><span>${k}</span><span class="muted" dir="auto">${v}</span></div>`;
   $("body").innerHTML = `<button class="btn ghost" id="bk" style="flex:none;align-self:flex-start">→ رجوع</button>
-  <h3 dir="auto" style="text-align:start">${esc(p.email || "ضيف (بدون إيميل)")}</h3>
+  <h3 dir="auto" style="text-align:start">${esc(p.email || "ضيف #" + String(id).slice(0, 4).toUpperCase())}</h3>
   ${cardsHtml([["أسئلة حلّها", num(tot), pc(cor, tot) + " صحيحة"], ["أيام نشاط (آخر 45)", num(days)], ["امتحانات (بدأ/خلّص)", num(r.exams.length) + "/" + num(r.exams.filter(e => e.status === "done").length)], ["مراجعة مستحقة", num(r.review?.due), `من ${num(r.review?.items)} · أخطاء متكررة ${num(r.review?.lapses)}`]])}
   <div class="grid2">
   ${sec("الحساب", kv("سجّل", esc(fmtDT(p.created_at))) + kv("اللغة", esc(p.lang || "—")) + kv("المنطقة الزمنية", esc(p.tz || "—")) + kv("المسار الحالي", esc(p.track ? trackLabel(p.track) : "—")) + kv("موعد الامتحان", esc(p.exam_date || "—")) + kv("الاشتراك", p.plan_until && new Date(p.plan_until) > new Date() ? `${esc(p.plan || "")} · لحد ${esc(String(p.plan_until).slice(0, 10))}` : "مجاني") + kv("حد الأجهزة", num(p.device_limit)) + (r.ents.length ? kv("مسارات مفتوحة", r.ents.map(e => `${esc(trackLabel(e.track))} (${esc(String(e.until).slice(0, 10))})`).join("، ")) : ""))}
