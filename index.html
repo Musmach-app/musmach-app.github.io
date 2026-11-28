@@ -246,9 +246,9 @@ footer a{color:#fff;text-decoration:none}footer a:hover{text-decoration:underlin
   <p class="sub">משלמים פעם אחת, בלי חידוש אוטומטי. ואם לא בטוחים, מתחילים מ-30 שאלות בחינם.</p>
   <div class="tabs"><button class="on" data-t="n">סיעוד</button><button data-t="m">רפואה</button><button data-t="o">שאר המקצועות</button></div>
   <div class="pcards">
-    <div class="pc" id="p2" hidden><h3>חודשיים</h3><div class="pr"><span data-n="" data-o="199" data-m="249">199</span><small> ₪</small></div><p class="pm">תשלום אחד</p><a class="btn b3" data-buy="m2" href="/buy/?t=physio&amp;p=m2">לרכישה</a></div>
-    <div class="pc"><h3>3 חודשים</h3><div class="pr"><span data-n="299" data-o="299" data-m="349">299</span><small> ₪</small></div><p class="pm">תשלום אחד</p><a class="btn b3" data-buy="m3" href="/buy/?t=nursing&amp;p=m3">לרכישה</a></div>
-    <div class="pc best"><h3>5 חודשים<span class="tag">הכי משתלם</span></h3><div class="pr"><span data-n="399" data-o="399" data-m="449">399</span><small> ₪</small></div><p class="pm">תשלום אחד</p><a class="btn b1" data-buy="m5" href="/buy/?t=nursing&amp;p=m5">לרכישה</a></div>
+    <div class="pc" id="p2"><h3>חודשיים</h3><div class="pr"><span data-n="199" data-o="199" data-m="249">199</span><small> ₪</small></div><p class="pm">תשלום אחד</p><a class="btn b3" data-buy="m2" href="/buy/?t=nursing&amp;p=m2">לרכישה</a></div>
+    <div class="pc"><h3>3 חודשים</h3><div class="pr"><span data-n="249" data-o="249" data-m="329">249</span><small> ₪</small></div><p class="pm">תשלום אחד</p><a class="btn b3" data-buy="m3" href="/buy/?t=nursing&amp;p=m3">לרכישה</a></div>
+    <div class="pc best"><h3>5 חודשים<span class="tag">הכי משתלם</span></h3><div class="pr"><span data-n="349" data-o="349" data-m="449">349</span><small> ₪</small></div><p class="pm">תשלום אחד</p><a class="btn b1" data-buy="m5" href="/buy/?t=nursing&amp;p=m5">לרכישה</a></div>
   </div>
   <p class="pnote">המחירים לרכישה באתר. ב-iPhone המחיר מופיע ב-App Store.</p>
 </div></section>
@@ -256,7 +256,7 @@ footer a{color:#fff;text-decoration:none}footer a:hover{text-decoration:underlin
 <section id="faq"><div class="rv w fq">
   <div><h2>שאלות נפוצות</h2><p class="sub">יש לכם שאלה אחרת? <a href="mailto:Musmachrishui@gmail.com" data-contact>כתבו לנו</a>.</p></div>
   <div>
-    <details><summary>כמה זה עולה?</summary><p>30 השאלות הראשונות בכל מקצוע בחינם, בלי הרשמה ובלי כרטיס אשראי. נרשמים רק כשרוצים להמשיך. אחר כך יש מנויים לשלושה או לחמישה חודשים (ובחלק מהמקצועות גם לחודשיים), בתשלום אחד ובלי חידוש אוטומטי.</p></details>
+    <details><summary>כמה זה עולה?</summary><p>30 השאלות הראשונות בכל מקצוע בחינם, בלי הרשמה ובלי כרטיס אשראי. נרשמים רק כשרוצים להמשיך. אחר כך יש מנויים לחודשיים, לשלושה או לחמישה חודשים, בתשלום אחד ובלי חידוש אוטומטי.</p></details>
     <details><summary>מאיפה השאלות?</summary><p>חלק מהשאלות ממבחני רישוי קודמים, והשאר שאלות תרגול שנכתבו לפי הספרות המקצועית בכל תחום. לכל שאלה מצוין מקור.</p></details>
     <details><summary>יש גם אנדרואיד?</summary><p>בינתיים משתמשים מהדפדפן בכל טלפון. גרסת אנדרואיד בדרך.</p></details>
     <details><summary>זה מחליף את ספרי הלימוד?</summary><p>לא. מוסמך עוזר לתרגל ולחזור על החומר, ולא מבטיח ציון במבחן.</p></details>
@@ -286,7 +286,7 @@ footer a{color:#fff;text-decoration:none}footer a:hover{text-decoration:underlin
 <script>(function(){var c=document.getElementById("cx");function o(e){e.preventDefault();c.classList.add("on")}function x(){c.classList.remove("on")}
 document.querySelectorAll("[data-contact]").forEach(function(a){a.addEventListener("click",o)});
 c.addEventListener("click",function(e){if(e.target===c||e.target.hasAttribute("data-cx"))x()});document.addEventListener("keydown",function(e){if(e.key==="Escape")x()});
-document.querySelectorAll(".tabs button").forEach(function(b){b.addEventListener("click",function(){document.querySelectorAll(".tabs button").forEach(function(x){x.classList.toggle("on",x===b)});var t=b.dataset.t,tt={n:"nursing",m:"medicine",o:"physio"}[t];document.querySelectorAll("[data-buy]").forEach(function(a){a.href="/buy/?t="+tt+"&p="+a.dataset.buy});document.getElementById("p2").hidden=t==="n";document.querySelectorAll(".pr span").forEach(function(s){if(s.dataset[t])s.textContent=s.dataset[t]})})});
+document.querySelectorAll(".tabs button").forEach(function(b){b.addEventListener("click",function(){document.querySelectorAll(".tabs button").forEach(function(x){x.classList.toggle("on",x===b)});var t=b.dataset.t,tt={n:"nursing",m:"medicine",o:"physio"}[t];document.querySelectorAll("[data-buy]").forEach(function(a){a.href="/buy/?t="+tt+"&p="+a.dataset.buy});document.querySelectorAll(".pr span").forEach(function(s){if(s.dataset[t])s.textContent=s.dataset[t]})})});
 document.querySelectorAll(".tp-tabs button").forEach(function(b){b.addEventListener("click",function(){document.querySelectorAll(".tp-tabs button").forEach(function(x){x.classList.toggle("on",x===b)});document.querySelectorAll(".tp-p").forEach(function(p){p.hidden=p.dataset.tp!==b.dataset.tp})})});
 var io="IntersectionObserver" in window?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.12}):null;
 document.querySelectorAll(".rv").forEach(function(el){io?io.observe(el):el.classList.add("in")});
