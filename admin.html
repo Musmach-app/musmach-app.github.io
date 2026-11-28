@@ -724,11 +724,13 @@ async function viewUsers() {
     limit: [`🏁 خلّصوا الـ ${FREE}`, u => u.n >= FREE],
     never: ["💤 ما حلّوا ولا سؤال", u => u.n === 0],
     active: ["🔥 نشطين آخر 7 أيام", u => u.actAgo != null && u.actAgo < 7],
+    prices: ["💳 شافوا الأسعار", u => +u.plan_views > 0],
+    buy: ["🛒 ضغطوا اشتري", u => +u.buy_starts > 0],
   };
   if (isG) { Object.keys(F).forEach(k => delete F[k]); Object.assign(F, FG); }
   if (!F[s.f]) s.f = "all";
   const fun = isG ? [["دخلوا كضيوف", all.length], ["حلّوا سؤال", all.filter(u => u.n > 0).length], ["وصلوا لـ 10", all.filter(u => u.n >= 10).length], [`خلّصوا الـ ${FREE}`, all.filter(u => u.n >= FREE).length]] : [["سجّلوا", all.length], ["حلّوا سؤال", all.filter(u => u.n > 0).length], [`وصلوا لـ ${FREE}`, all.filter(u => u.n >= FREE).length], ["دفعوا", all.filter(u => u.st === "paid").length]];
-  $("ufun").innerHTML = `<div class="card"><b>${isG ? "مسار الضيوف" : "من التسجيل للدفع"}</b><div class="row" style="justify-content:flex-start;flex-wrap:wrap;gap:8px">${fun.map(([k, v], i) => `${i ? `<span class="muted" style="flex:none">←</span>` : ""}<span class="pill" style="flex:none">${k}: <b>${num(v)}</b>${i && fun[i-1][1] ? ` <span class="muted">(${Math.round(100 * v / fun[i-1][1])}%)</span>` : ""}</span>`).join("")}</div></div>`;
+  $("ufun").innerHTML = `<div class="card"><b>${isG ? "مسار الضيوف" : "من التسجيل للدفع"}</b><div class="row" style="justify-content:flex-start;flex-wrap:wrap;gap:8px">${fun.map(([k, v], i) => `${i ? `<span class="muted" style="flex:none">←</span>` : ""}<span class="pill" style="flex:none">${k}: <b>${num(v)}</b>${i && fun[i-1][1] ? ` <span class="muted">(${Math.round(100 * v / fun[i-1][1])}%)</span>` : ""}</span>`).join("")}</div>${isG ? `<div class="row" style="justify-content:flex-start;flex-wrap:wrap;gap:8px;margin-top:8px"><span class="pill" style="flex:none">💳 شافوا الأسعار: <b>${num(all.filter(u => +u.plan_views > 0).length)}</b></span><span class="pill" style="flex:none">🛒 ضغطوا اشتري: <b>${num(all.filter(u => +u.buy_starts > 0).length)}</b></span></div>` : ""}</div>`;
   $("ufil").innerHTML = Object.entries(F).map(([k, [n, f]]) => `<button data-f="${k}" class="${s.f === k ? "on" : ""}">${n} <span class="muted">${all.filter(f).length}</span></button>`).join("");
   $("ufil").querySelectorAll("[data-f]").forEach(b => b.onclick = () => { s.f = b.dataset.f; viewUsers(); });
   $("usort").value = s.sort;
